@@ -6,6 +6,6 @@ ENDIF(COMMAND CMAKE_POLICY)
 PROJECT(RandomSVD)
 
 
-INCLUDE_DIRECTORIES(. config lib)
+INCLUDE_DIRECTORIES(. config lib random/lib)
 ADD_SUBDIRECTORY(commandline)
 
