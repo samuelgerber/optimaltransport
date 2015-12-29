@@ -7,8 +7,8 @@
 
 namespace EigenLinalg{
   
-class<typename TPrecision>
-class RowStreamingRandomRange : public RandomRange{
+template<typename TPrecision>
+class RowStreamingRandomRange : public RandomRange<TPrecision>{
   
   public:
     typedef typename Eigen::Matrix<TPrecision, Eigen::Dynamic, Eigen::Dynamic> MatrixXp;
@@ -69,6 +69,7 @@ class RowStreamingRandomRange : public RandomRange{
 
 };
 
-}
 
+
+}
 #endif 

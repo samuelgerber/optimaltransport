@@ -1,5 +1,4 @@
 
-#include "DenseVector.h"
 #include "EigenStreamingRandomSVD.h"
 #include "EigenLinalgIO.h"
 #include "IO.h"
@@ -52,7 +51,7 @@ int main(int argc, char **argv){
 
 
   std::cout << "Computing randomized range"<< std::endl;
-  EigenLinalg::RowStreamingRandomRange range(m, n, d);
+  EigenLinalg::RowStreamingRandomRange<double> range(m, n, d);
   for(int i=0; i< files.size(); i++){
     Eigen::VectorXd x =
       EigenLinalg::LinalgIO<double>::readVector( files[i] );
@@ -68,7 +67,7 @@ int main(int argc, char **argv){
   range.Compute();
 
   std::cout << "Randomized svd" << std::endl;
-  EigenLinalg::RowStreamingRandomSVD svd( range, n );
+  EigenLinalg::RowStreamingRandomSVD<double> svd( range, n );
   for(int i=0; i< files.size(); i++){
     Eigen::VectorXd x =
       EigenLinalg::LinalgIO<double>::readVector( files[i] );

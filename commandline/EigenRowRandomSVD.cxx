@@ -62,7 +62,7 @@ int main(int argc, char **argv){
     EigenLinalg::LinalgIO<double>::writeVector( ss6.str(), mean );
   }
   std::cout << "Randomized svd" << std::endl;
-  EigenLinalg::RandomSVD svd( X, d, p);
+  EigenLinalg::RandomSVD<double> svd( X, d, p);
 
   std::stringstream ss1;
   ss1 << prefix << "-U.data";

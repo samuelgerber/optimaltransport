@@ -7,7 +7,7 @@
 namespace EigenLinalg{
 
   
-class<typename TPrecision>  
+template<typename TPrecision>  
 class RowStreamingRandomSVD{
   public:
     typedef typename Eigen::Matrix<TPrecision, Eigen::Dynamic, Eigen::Dynamic> MatrixXp;

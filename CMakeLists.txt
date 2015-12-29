@@ -9,6 +9,6 @@ set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/")
 find_package(Eigen3 REQUIRED)
 
 
-INCLUDE_DIRECTORIES(. config lib random/lib ${EIGEN3_INCLUDE_DIR} )
+INCLUDE_DIRECTORIES(. config lib external/utils/lib ${EIGEN3_INCLUDE_DIR} )
 ADD_SUBDIRECTORY(commandline)
 
