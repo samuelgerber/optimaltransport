@@ -1,5 +1,4 @@
 
-#include "DenseVector.h"
 #include "EigenRandomSVD.h"
 #include "EigenLinalgIO.h"
 #include "IO.h"

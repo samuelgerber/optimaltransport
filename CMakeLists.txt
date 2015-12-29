@@ -5,7 +5,10 @@ ENDIF(COMMAND CMAKE_POLICY)
 
 PROJECT(RandomSVD)
 
+set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/")
+find_package(Eigen3 REQUIRED)
 
-INCLUDE_DIRECTORIES(. config lib random/lib)
+
+INCLUDE_DIRECTORIES(. config lib random/lib ${EIGEN3_INCLUDE_DIR} )
 ADD_SUBDIRECTORY(commandline)
 
