@@ -11,6 +11,8 @@ find_package(Eigen3 REQUIRED)
 
 INCLUDE_DIRECTORIES( lib
                      external/utils/lib
+                     external/kmeans/lib
+                     external/flinalg/lib
                      external/randomsvd/lib
                      external/metrics/lib 
                      ${EIGEN3_INCLUDE_DIR} )
