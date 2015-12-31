@@ -12,11 +12,11 @@ FIND_PACKAGE(CPLEX)
 
 
 INCLUDE_DIRECTORIES( lib
-                     external/utils/lib
-                     external/kmeans/lib
-                     external/flinalg/lib
-                     external/randomsvd/lib
-                     external/metrics/lib 
+                     external/gmra/lib
+                     external/gmra/external/utils/lib
+                     external/gmra/external/kmeans/lib
+                     external/gmra/external/randomsvd/lib
+                     external/gmra/external/metrics/lib 
                      ${EIGEN3_INCLUDE_DIR} 
                      ${CPLEX_INCLUDE_DIRS} 
                      )

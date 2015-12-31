@@ -10,7 +10,7 @@
 #include <iostream>
 
 #include <vector>
-
+#include <math.h>
 
 class CPLEXNetworkSolver : public LPSolver{
 

@@ -1,0 +1,10 @@
+useDynLib("sinkhorn")
+
+export(
+  "multiscale.sinkhorn.transport",
+  "multiscale.sinkhorn.transport.plot.map",
+  "multiscale.sinkhorn.transport.interpolate",
+  "sample.from.array",
+  "sample.to.array",
+  "sinkhorn.transport"
+)

@@ -1,0 +1,14 @@
+## sinkorn version 0.4.1 - S.Gerber - May 2015 ##
+- Removed fortran dependencies. 
+
+## sinkorn version 0.4 - S.Gerber - October 2014 ##
+- Changed gmra package to use Eigen. 
+
+## sinkorn version 0.3 - S.Gerber - October 2014 ##
+- Multiscale sinkhorn now dependant on gmra package. 
+
+## sinkorn version 0.2 - S.Gerber - June 2014 ##
+- Updated single scale sinkhorn interafce. Updated manual pages. 
+
+## sinkorn version 0.1 - S.Gerber - December 25. 2013 ##
+- Sinkhorn and Sparse Multiscale Sinkorn distance package

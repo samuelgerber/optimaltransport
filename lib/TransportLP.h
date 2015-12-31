@@ -2,7 +2,7 @@
 #define TRANSPORTLP_H
 
 #include "LPSolver.h"
-
+#include <Eigen/Dense>
 #include <map>
 
 

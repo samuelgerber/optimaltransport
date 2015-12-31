@@ -1,0 +1,10 @@
+Package: sinkhorn
+Version: 0.4.1
+Date: 2015-04-23
+Author: Samuel Gerber <sgerber@math.duke.edu> 
+Maintainer: Samuel Gerber <sgerber@math.duke.edu>
+Description: Sinkhorn and Sparse Multiscale Sinkhorn Distances
+Title: sinkhorn
+Depends: R (>= 2.10), gmra, RColorBrewer
+License: GPL-2
+Repository: CRAN

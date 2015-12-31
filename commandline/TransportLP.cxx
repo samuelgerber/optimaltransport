@@ -7,7 +7,7 @@
 #include "DenseMatrix.h"
 #include "LinalgIO.h"
 
-#include "CmdLine.h"
+#include <tclap/CmdLine.h>
 
 int main(int argc, char **argv){
   using namespace FortranLinalg;
