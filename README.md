@@ -1,0 +1,1 @@
+Geomteric Multiresolution Analysis implementation in C++ with an R package front end.
