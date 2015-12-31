@@ -19,7 +19,7 @@ ADD_CUSTOM_TARGET(R_gmra
     ${CMAKE_SOURCE_DIR}/external/metrics/lib/EigenEuclideanMetric.h 
     ${CMAKE_SOURCE_DIR}/external/metrics/lib/EigenL1Metric.h 
     ${CMAKE_SOURCE_DIR}/external/metrics/lib/EigenWasserstein.h
-    ${CMAKE_SOURCE_DIR}/external/randomsvd/lib/EigenSquaredEuclideanMetric.h 
+    ${CMAKE_SOURCE_DIR}/external/metrics/lib/EigenSquaredEuclideanMetric.h 
     ${CMAKE_SOURCE_DIR}/external/randomsvd/lib/EigenRandomSVD.h
     ${CMAKE_SOURCE_DIR}/external/randomsvd/lib/EigenRandomRange.h
     ${CMAKE_SOURCE_DIR}/external/utils/lib/Random.h
