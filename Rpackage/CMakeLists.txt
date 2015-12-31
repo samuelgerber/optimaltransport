@@ -13,15 +13,15 @@ PROJECT(R)
 
 ADD_CUSTOM_TARGET(R_gmra 
     COMMAND rsync -aC ${R_SOURCE_DIR}/gmra . 
-    COMMAND rsync -aC ${CMAKE_SOURCE_DIR}/gmra/ ./gmra/src 
+    COMMAND rsync -aC ${CMAKE_SOURCE_DIR}/lib/ ./gmra/src 
     COMMAND cp 
     ${CMAKE_SOURCE_DIR}/external/metrics/lib/EigenMetric.h
     ${CMAKE_SOURCE_DIR}/external/metrics/lib/EigenEuclideanMetric.h 
     ${CMAKE_SOURCE_DIR}/external/metrics/lib/EigenL1Metric.h 
     ${CMAKE_SOURCE_DIR}/external/metrics/lib/EigenWasserstein.h
-    ${CMAKE_SOURCE_DIR}/external/randomizedsvd/lib/EigenSquaredEuclideanMetric.h 
-    ${CMAKE_SOURCE_DIR}/external/randomizedsvd/lib/EigenRandomSVD.h
-    ${CMAKE_SOURCE_DIR}/external/randomizedsvd/lib/EigenRandomRange.h
+    ${CMAKE_SOURCE_DIR}/external/randomsvd/lib/EigenSquaredEuclideanMetric.h 
+    ${CMAKE_SOURCE_DIR}/external/randomsvd/lib/EigenRandomSVD.h
+    ${CMAKE_SOURCE_DIR}/external/randomsvd/lib/EigenRandomRange.h
     ${CMAKE_SOURCE_DIR}/external/utils/lib/Random.h
     ${CMAKE_SOURCE_DIR}/external/kmeans/lib/Kmeans.h
     ./gmra/src

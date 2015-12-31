@@ -77,8 +77,8 @@ int main(int argc, char **argv){
 
 try{
 
-  typedef typename GMRANode<Precision>::MatrixXp MatrixXp;
-  typedef typename GMRANode<Precision>::VectorXp VectorXp;
+  typedef GMRANode<Precision>::MatrixXp MatrixXp;
+  typedef GMRANode<Precision>::VectorXp VectorXp;
 
   MatrixXp X = EigenLinalg::LinalgIO<Precision>::readMatrix(dataArg.getValue());
  
