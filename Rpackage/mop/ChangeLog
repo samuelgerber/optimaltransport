@@ -1,0 +1,56 @@
+## mop version 0.8 - S. Gerber - November 2015 ##
+- Add capacity constraint propagation
+
+## mop version 0.7 - S. Gerber - July 2015 ##
+- Refactoring of C++ transport code and R interface. This added the capaipility to
+combine various propagation and neighborhood strategies.
+
+## mop version 0.6.1 - S. Gerber - May 2015 ##
+- Removed fortran dependencies
+
+## mop version 0.6 - S.Gerber - October 2014 ##
+- Changed gmra package to use Eigen. 
+
+## mop version 0.5 - S.Gerber - October 2014 ##
+- Creation of GMRA objects now in package gmra. 
+
+## mop version 0.4.1 - S.Gerber - June 2014 ##
+- Updated manual pages, fixed some makevars issues
+
+## mop version 0.4 - S.Gerber - February 2014 ##
+- Updated LP solvers add new multiscale propgation strategies
+
+## mop version 0.3 - S.Gerber - November 5. 2013 ##
+- Added CPLEX and MOSEK solver options
+
+## mop version 0.2 - S.Gerber - October 16. 2013 ##
+- Fixed potential neighborhood version
+- Added plotting methods
+
+## mop version 0.1 - S.Gerber - May 30. 2013 ##
+- split up package multiscale into mop, mph and gmra
+- Optimized neighborhood expansion approach
+
+## multiscale version 0.2.2 - S. Gerber - May 26. 2013 ##
+- Added new numerically stable solution propagation scheme fro multiscale transport 
+
+## multiscale version 0.2.2 - S. Gerber - May 26. 2013 ##
+- Added new numerically stable solution propagation scheme fro multiscale transport 
+
+## multiscale version 0.2.2 - S. Gerber - May 26. 2013 ##
+- Added new numerically stable solution propagation scheme fro multiscale transport 
+
+## multiscale version 0.2.1 - S. Gerber - May 18. 2013 ##
+- Fixed some bug in multiscale.rips
+- Fixed Harer version - both version still need some more work and only run
+"approximately" correct...
+
+## multiscale version 0.2 - S. Gerber - May 16. 2013 ##
+- Fixed multiscale rips ghost edge version
+- Added GMRA neighborhhod search
+- Added multicsale transport
+
+## multiscale version 0.1 - S. Gerber - April 30. 2013 ##
+- Inital package 
+
+

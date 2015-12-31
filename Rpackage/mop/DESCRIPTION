@@ -1,0 +1,10 @@
+Package: mop
+Version: 0.8
+Date: 2015-11-8
+Author: Samuel Gerber <sgerber@math.duke.edu> 
+Maintainer: Samuel Gerber <sgerber@math.duke.edu>
+Description: Mutliscale approach to solve optimal transport problems
+Title: mop
+Depends: R (>= 2.10), gmra, RColorBrewer
+License: GPL-2
+Repository: CRAN

@@ -1,0 +1,30 @@
+useDynLib("mop")
+
+export(
+  "transport",
+  "multiscale.transport.solve",
+  "multiscale.transport.create.lp",
+  "multiscale.transport.setup.default",
+  "multiscale.transport.add.expand.neighborhood.strategy",
+  "multiscale.transport.add.refine.neighborhood.strategy",
+  "multiscale.transport.add.potential.neighborhood.strategy",
+  "multiscale.transport.set.propagation.strategy.1",
+  "multiscale.transport.set.propagation.strategy.2",
+  "multiscale.transport.set.max.neighborhood.size",
+  "multiscale.transport.create.neighborhood.propagation.strategy",
+  "multiscale.transport.create.capacity.propagation.strategy",
+  "multiscale.transport.create.iterated.capacity.propagation.strategy",
+  "multiscale.transport.create.randomized.neighborhood.propagation.strategy",
+  "multiscale.transport.create.sinkhorn.propagation.strategy",
+  "multiscale.transport.create.max.entropy.propagation.strategy",
+  "multiscale.transport.plot.map",
+  "multiscale.transport.plot.multiscale.map",
+  "multiscale.transport.plot.binnned.map",
+  "multiscale.transport.bin",
+  "multiscale.transport.interpolate",
+  "multiscale.transport.decompose",
+  "multiscale.transport.decompose2",
+  "multiscale.transport.vector.decomposition",
+  "sample.from.array",
+  "sample.to.array"
+)
