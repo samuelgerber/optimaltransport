@@ -1,0 +1,27 @@
+## gmra version 0.5.3 - S. Gerber - Decemeber 2015 ##
+- Added gmra tree ecces methods
+
+## gmra version 0.5.2 - S. Gerber - May 2015 ##
+- Removed fortran dependencies
+
+## gmra version 0.5.1 - S.Gerber - October 2014 ##
+- Added pruning. Added man pages
+
+## gmra version 0.5 - S.Gerber - October 2014 ##
+- Added iterated kmeans decomposition
+
+## gmra version 0.4 - S.Gerber - October 2014 ##
+- Changed gmra package to use Eigen.
+- Added gmra query methods.
+- Added gmra density estimation.
+
+## gmra version 0.3 - S. Gerber - October 02. 2014 ##
+- Implemented pointers for gmra objects. mph and mop now depend on gmra to
+create gmra objects
+
+## gmra version 0.2 - S. Gerber - May 30. 2013 ##
+- Added functions from multiscale package which is split into mph, mop, and gmra
+
+## gmra version 0.1 - S. Gerber - August 15. 2012 ##
+- Inital package
+
