@@ -1,0 +1,22 @@
+useDynLib("gmra")
+
+export(
+  "gmra.create.ipca",
+  "gmra.create.ikm",
+  "gmra.partition",
+  "gmra.centers",
+  "gmra.radii",
+  "gmra.npoints",
+  "gmra.neighborhood",
+  "gmra.root",
+  "gmra.node.parent",
+  "gmra.node.children",
+  "gmra.nodes",
+  "gmra.node.points",
+  "gmra.node.radii",
+  "gmra.node.npoints",
+  "gmra.node.centers",
+  "gmra.density.estimate",
+  "gmra.mean.signal.estimate",
+  "gmra.prune.min.points.at.scale"
+)

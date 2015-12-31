@@ -1,0 +1,10 @@
+Package: gmra
+Version: 0.5.3
+Date: 2015-12-02
+Author: Samuel Gerber <sgerber@uoregon.edu> 
+Maintainer: Samuel Gerber <sgerber@uoregon.edu>
+Description: Geometric Multi-resolution Analysis
+Title: GMRA
+Depends: R (>= 2.10)
+License: GPL-2
+Repository: CRAN
