@@ -4,13 +4,12 @@
 
 #include "CPLEXNetworkSolver.h"
 #include "TransportLP.h"
-#include "DenseMatrix.h"
-#include "LinalgIO.h"
+#include <Eigen/Dense>
+#include "EigenLinalgIO.h"
 
 #include <tclap/CmdLine.h>
 
 int main(int argc, char **argv){
-  using namespace FortranLinalg;
 
   //Command line parsing
   TCLAP::CmdLine cmd("LPTransport", ' ', "1");
@@ -27,13 +26,11 @@ int main(int argc, char **argv){
   }
 
 
-  DenseMatrix<Precision> C = LinalgIO<Precision>::readMatrix(dArg.getValue());
+  Eigen::MatrixXd C = EigenLinalg::LinalgIO<Precision>::readMatrix(dArg.getValue());
   
-  DenseVector<Precision> from(C.M());
-  Linalg<Precision>::Set(from, 1.0/from.N() );
+  Eigen::VectorXd from= Eigen::VectorXd::Constant( C.rows(), 1.0/C.rows() );
 
-  DenseVector<Precision> to(C.N());
-  Linalg<Precision>::Set(to, 1.0/to.N() );
+  Eigen::VectorXd to= Eigen::VectorXd::Constant( C.cols(), 1.0/C.cols() );
   
   LPSolver *solver= new CPLEXNetworkSolver();
   TransportLP<Precision> trp(solver);

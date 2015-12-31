@@ -12,6 +12,7 @@ FIND_PACKAGE(CPLEX)
 
 
 INCLUDE_DIRECTORIES( lib
+                     external/flinalg/lib
                      external/gmra/lib
                      external/gmra/external/utils/lib
                      external/gmra/external/kmeans/lib

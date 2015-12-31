@@ -10,8 +10,8 @@ PROJECT(R)
 
 ADD_CUSTOM_TARGET(R_mop
     COMMAND rsync -aC ${R_SOURCE_DIR}/mop . 
-    COMMAND rsync -aC ${CMAKE_SOURCE_DIR}/external/gmra/lib ./mop/src 
-    COMMAND rsync -aC ${R_Source_DIR}/Eigen/ ./mop/src/Eigen 
+    COMMAND rsync -aC ${CMAKE_SOURCE_DIR}/external/gmra/lib/ ./mop/src 
+    COMMAND rsync -aC ${R_SOURCE_DIR}/Eigen/ ./mop/src/Eigen 
     COMMAND cp 
     ${CMAKE_SOURCE_DIR}/lib/SinkhornTransport.h
     ${CMAKE_SOURCE_DIR}/lib/SparseSinkhornTransport.h
@@ -40,8 +40,8 @@ ADD_CUSTOM_TARGET(R_mop
     ${CMAKE_SOURCE_DIR}/external/gmra/external/metrics/lib/EigenEuclideanMetric.h 
     ${CMAKE_SOURCE_DIR}/external/gmra/external/metrics/lib/EigenSquaredEuclideanMetric.h 
     ${CMAKE_SOURCE_DIR}/external/gmra/external/metrics/lib/EigenL1Metric.h 
+    ${CMAKE_SOURCE_DIR}/external/gmra/external/metrics/lib/EigenWasserstein.h
     ${CMAKE_SOURCE_DIR}/external/gmra/external/utils/lib/Random.h
-    ${CMAKE_SOURCE_DIR}/external/gmra/external/randomsvd/lib/EigenWasserstein.h
     ${CMAKE_SOURCE_DIR}/external/gmra/external/randomsvd/lib/EigenRandomSVD.h
     ${CMAKE_SOURCE_DIR}/external/gmra/external/randomsvd/lib/EigenRandomRange.h
     ./mop/src
@@ -64,8 +64,8 @@ ADD_DEPENDENCIES(R_mop_check R_mop)
 ########### Entropy regularized optimal transport #############
 
 ADD_CUSTOM_TARGET(R_sinkhorn
-    COMMAND rsync -aC ${Rcode_SOURCE_DIR}/sinkhorn . 
-    COMMAND rsync -aC ${CMAKE_SOURCE_DIR}/external/gmra/lib ./sinkhorn/src 
+    COMMAND rsync -aC ${R_SOURCE_DIR}/sinkhorn . 
+    COMMAND rsync -aC ${CMAKE_SOURCE_DIR}/external/gmra/lib/ ./sinkhorn/src 
     COMMAND rsync -aC ${R_SOURCE_DIR}/Eigen/ ./sinkhorn/src/Eigen 
     COMMAND cp 
     ${CMAKE_SOURCE_DIR}/lib/SinkhornTransport.h
