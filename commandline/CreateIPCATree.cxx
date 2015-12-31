@@ -8,7 +8,7 @@
 #include "EigenEuclideanMetric.h"
 #include "EigenLinalgIO.h"
 #include "IPCATree.h"
-#include "CmdLine.h"
+#include <tclap/CmdLine.h>
 #include "NodeDistance.h"
   
 

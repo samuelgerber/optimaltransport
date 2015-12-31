@@ -5,7 +5,7 @@
 
 #include <stdio.h>
 
-#include "CmdLine.h"
+#include <tclap/CmdLine.h>
 
 #include "EigenEuclideanMetric.h"
 #include "EigenLinalgIO.h"

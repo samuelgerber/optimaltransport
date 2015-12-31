@@ -7,7 +7,7 @@
 #include "IPCAGWT.h"
 #include "WaveletSimilarity.h"
 #include "DenseMatrix.h"
-#include "CmdLine.h"
+#include <tclap/CmdLine.h>
 #include "LPDistance.h"
 #include "HierarchicalLPDistance.h"
 

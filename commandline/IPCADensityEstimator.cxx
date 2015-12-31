@@ -9,7 +9,7 @@
 #include "GMRADensityEstimator.h"
 #include "IPCATree.h"
 
-#include "CmdLine.h"
+#include <tclap/CmdLine.h>
 #include "NodeDistance.h"
 
 IPCANodeFactory<Precision> *getNodeFactory(GMRADataObject<Precision> *D, int d, double t){

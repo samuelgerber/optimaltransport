@@ -5,7 +5,7 @@
 #include "LinalgIO.h"
 #include "IPCATree.h"
 #include "DenseMatrix.h"
-#include "CmdLine.h"
+#include <tclap/CmdLine.h>
 #include "Wasserstein.h"
 
 

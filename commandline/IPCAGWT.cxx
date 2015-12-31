@@ -6,7 +6,7 @@
 #include "LinalgIO.h"
 #include "IPCAGWT.h"
 #include "DenseMatrix.h"
-#include "CmdLine.h"
+#include <tclap/CmdLine.h>
 
 #include <set>
 

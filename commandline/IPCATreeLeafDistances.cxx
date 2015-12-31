@@ -7,7 +7,7 @@
 #include "IPCATree.h"
 #include "EuclideanMetric.h"
 #include "DenseMatrix.h"
-#include "CmdLine.h"
+#include <tclap/CmdLine.h>
 
 
 

@@ -9,7 +9,7 @@
 #include "LinalgIO.h"
 #include "AxisAlignedTree.h"
 #include "DenseMatrix.h"
-#include "CmdLine.h"
+#include <tclap/CmdLine.h>
 #include "NodeDistance.h"
   
 

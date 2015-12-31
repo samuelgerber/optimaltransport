@@ -9,7 +9,11 @@ set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/")
 find_package(Eigen3 REQUIRED)
 
 
-INCLUDE_DIRECTORIES(lib ${EIGEN3_INCLUDE_DIR} )
+INCLUDE_DIRECTORIES( lib
+                     external/utils/lib
+                     external/randomsvd/lib
+                     external/metrics/lib 
+                     ${EIGEN3_INCLUDE_DIR} )
 ADD_SUBDIRECTORY(commandline)
 ADD_SUBDIRECTORY(Rpackage)
 
