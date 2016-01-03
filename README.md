@@ -1,6 +1,8 @@
 #Optimal Transport
 
-![mop-small.png](https://bitbucket.org/repo/XyGX46/images/2263246369-mop-small.png)
+![scale-4.png](https://bitbucket.org/repo/XyGX46/images/333242785-scale-4.png)
+![scale-6.png](https://bitbucket.org/repo/XyGX46/images/661701334-scale-6.png)
+![scale-11.png](https://bitbucket.org/repo/XyGX46/images/104944428-scale-11.png)
 
 This code is designed for fast multiscale optimal transport but also permits single scale optimal transport computations and more:
 
