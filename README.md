@@ -10,5 +10,5 @@ This code is designed for fast multiscale optimal transport but also permits sin
 * Fast approximate transport using a mutliscale strategy 
 * Sinkhorn optimal transport approach
 * Multiscale version of sinkhorn transport
-* Rpackage for sinkhorn transport(both multiscale and single scale, depends on gmra r package)
+* Rpackage for sinkhorn transport (both multiscale and single scale, depends on gmra R package)
 * Rpackage for optimal transport (both multiscale and single scale, requires any of CPLEX, GPLK or MOSEK, depends on gmra r package )
