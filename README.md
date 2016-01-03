@@ -13,6 +13,14 @@ This code is designed for fast multiscale optimal transport but also permits sin
 * Rpackage for sinkhorn transport (both multiscale and single scale, depends on gmra R package)
 * Rpackage for optimal transport (both multiscale and single scale, requires any of CPLEX, GPLK or MOSEK, depends on gmra r package )
 
+## Requirements
+
+Libraries:
+
+* Eigen
+* CPLEX
+     * Alternatively MOSEK or GLPK (currently setup for CPLEX but few modifications are required to change it to MOSEK or GLPK, edit the .cxx driver files in commandline accordingly to use the different solver header files and instantiate the solver you want to use. Then edit CMake files to point to the library specific header files and libraries. )
+
 ## R Package mop Installation
 
 This package depends on linear programming libraries. Currently it supports GLPK,
