@@ -49,9 +49,11 @@ class CPLEXNetworkSolver : public LPSolver{
         env = CPXopenCPLEX( &status );
         CPXsetintparam( env, CPX_PARAM_SCRIND, CPX_ON );
         CPXsetintparam( env, CPX_PARAM_NETDISPLAY, 1 );
-        CPXsetdblparam( env, CPX_PARAM_NETEPOPT, 1e-8 );
-        CPXsetdblparam( env, CPX_PARAM_NETEPRHS, 1e-8 );
+        CPXsetdblparam( env, CPX_PARAM_NETEPOPT, 1e-5 );
+        CPXsetdblparam( env, CPX_PARAM_NETEPRHS, 1e-7 );
         CPXsetintparam (env, CPX_PARAM_ADVIND, 2);
+        CPXsetdblparam( env, CPX_PARAM_EPPER, 1e-7 );
+        
         lambda = l;
         ns = 0;
         solstat = CPX_STAT_ABORT_USER;

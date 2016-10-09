@@ -206,7 +206,7 @@ class PotentialNeighborhoodStrategy : public NeighborhoodStrategy<TPrecision> {
         std::vector<Status> colStatus( newSol->getNumberOfPaths(), LPSolver::LOWER );
 
         for( sol->pathIteratorBegin(); !sol->pathIteratorIsAtEnd();
-            sol->pathIteratorNext() ){
+             sol->pathIteratorNext() ){
 
 
           Path &path = sol->pathIteratorCurrent();

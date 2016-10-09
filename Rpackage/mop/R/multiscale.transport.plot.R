@@ -15,7 +15,7 @@
 multiscale.transport.plot.map <- function(mst, index, plotMap = TRUE, colX1 =
     t( c(0,0,0) ), colX2 = t( c(1,0,0) ), colMap = t( c(0,0,0) ), cex=1, xlab=expression(x[1]),
     ylab=expression(x[2]), mapAlpha = 1, pointAlpha = 1, X1 = mst$from[[index]],
-    X2 = mst$to[[index]], asp=1, colorByPotential = FALSE, add=FALSE, lwd=2,
+    X2 = mst$to[[index]], asp=1, colorByPotential = 0, add=FALSE, lwd=2,
     cex.axis=1, cex.lab=1, arrows=FALSE, arrow.length=0.1, arrow.angle=15){
 
   library(RColorBrewer)
@@ -30,7 +30,7 @@ multiscale.transport.plot.map <- function(mst, index, plotMap = TRUE, colX1 =
     map=NULL
   }
 
-  if(colorByPotential){
+  if(colorByPotential==1){
     pX1 = mst$potFrom[[index]]
     pX2 = mst$potTo[[index]]
 
@@ -43,6 +43,20 @@ multiscale.transport.plot.map <- function(mst, index, plotMap = TRUE, colX1 =
     ramp = colorRamp( brewer.pal(n=11, name="PuOr") ) 
     colX1 = ramp(pX1)/255 
     colX2 = ramp(pX2)/255 
+  }
+  else if(colorByPotential==2){
+    pX1 = mst$potFrom[[index]]
+    pX2 = mst$potTo[[index]]
+
+    pX1 = pX1 - min(pX1)
+    pX2 = pX2 - min(pX2)
+    pX1 = pX1 / max(pX1) * 0.5 + 0.5
+    pX2 = pX2 / max(pX2) * 0.5 
+  
+    ramp = colorRamp( brewer.pal(n=11, name="PuOr") ) 
+    colX1 = ramp(pX1)/255 
+    colX2 = ramp(pX2)/255 
+
   }
 
   if(pointAlpha < 0){
@@ -117,7 +131,7 @@ multiscale.transport.plot.map <- function(mst, index, plotMap = TRUE, colX1 =
 
 multiscale.transport.plot.multiscale.map <- function(mst, index, plotMap = TRUE, colX1 =
     t( c(0,0,0) ), colX2 = t( c(1,0,0) ), colMap = t( c(0,0,0) ), cex=1, xlab=expression(x[1]),
-    ylab=expression(x[2]), mapAlpha = 1, pointAlpha = 1, asp=1, colorByPotential = FALSE, add=FALSE){
+    ylab=expression(x[2]), mapAlpha = 1, pointAlpha = 1, asp=1, colorByPotential = 0, add=FALSE){
 
   library(RColorBrewer)  
     
@@ -135,7 +149,7 @@ multiscale.transport.plot.multiscale.map <- function(mst, index, plotMap = TRUE,
   X1 = mst$from[[index]]
   X2 = mst$to[[index]]
 
-  if(colorByPotential){
+  if(colorByPotential==1){
     pX1 = mst$potFrom[[index]]
     pX2 = mst$potTo[[index]]
 
@@ -149,7 +163,21 @@ multiscale.transport.plot.multiscale.map <- function(mst, index, plotMap = TRUE,
     colX1 = ramp(pX1)/255 
     colX2 = ramp(pX2)/255 
   }
+  else if(colorByPotential==2){
+    pX1 = mst$potFrom[[index]]
+    pX2 = mst$potTo[[index]]
 
+    pX1 = pX1 - min(pX1)
+    pX2 = pX2 - min(pX2)
+    pX1 = pX1 / max(pX1) * 0.5 + 0.5
+    pX2 = pX2 / max(pX2) * 0.5 
+  
+    ramp = colorRamp( brewer.pal(n=11, name="PuOr") ) 
+    colX1 = ramp(pX1)/255 
+    colX2 = ramp(pX2)/255 
+
+  } 
+ 
   if(pointAlpha < 0){
     alpha = min(1, -pointAlpha)
     pointAlpha1 = alpha
