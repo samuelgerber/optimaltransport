@@ -2,7 +2,10 @@ ADD_EXECUTABLE(IPCATransport IPCATransport.cxx)
 TARGET_LINK_LIBRARIES (IPCATransport lapack blas ${CPLEX_LIBRARIES} pthread )
 
 ADD_EXECUTABLE(TransportLP TransportLP.cxx)
-TARGET_LINK_LIBRARIES (TransportLP gfortran lapack blas ${CPLEX_LIBRARIES} pthread)
+TARGET_LINK_LIBRARIES (TransportLP ${CPLEX_LIBRARIES} )
+
+ADD_EXECUTABLE(MatrixMinFlow MatrixMinFlow.cxx)
+TARGET_LINK_LIBRARIES (MatrixMinFlow ${CPLEX_LIBRARIES} )
 
 ADD_EXECUTABLE(SinkhornTransport SinkhornTransport.cxx)
 TARGET_LINK_LIBRARIES (SinkhornTransport)

@@ -34,6 +34,8 @@
 
 #include "TransportLP.h"
 
+#include "MatrixMinFlow.h"
+
 #include "mop_config.h"
 
 #ifdef MOP_USE_GLPK
@@ -1029,6 +1031,64 @@ extern "C" {
   };
 
 
+  SEXP neighborMinFlow(SEXP Rx1, SEXP Rx2, SEXP Rm, SEXP Rn){
+    using namespace Eigen;
+
+    int m = *INTEGER(Rm);
+    int n = *INTEGER(Rn);
+    double *x1 = REAL(Rx1);
+    double *x2 = REAL(Rx2);
+
+    Map<MatrixXd> X1(x1, m, n);
+    Map<MatrixXd> X2(x2, m, n);
+
+    MatrixMinFlow<double> mmf;
+    std::map< std::pair<int, int>, double> plan = mmf.solve(X1, X2);
+    
+    
+    MatrixXd map(plan.size(), 3);
+    int mapIndex = 0;
+
+    for( std::map< std::pair<int, int>, double>::iterator it = plan.begin(); 
+         it!=plan.end(); ++it ){
+
+      const std::pair<int, int> &p = it->first;
+      map( mapIndex, 0 ) = p.first;
+      map( mapIndex, 1 ) = p.second;
+      map( mapIndex, 2 ) = it->second;;
+
+      mapIndex++;
+    }
+    
+    double cost = mmf.getCost();
+    
+    MatrixXi &id2spatial = mmf.getId2Spatial();
+
+    SEXP Rres;
+    PROTECT( Rres = Rf_allocVector( VECSXP, 3) );
+
+    SEXP Rmap;
+    PROTECT( Rmap = Rf_allocMatrix(REALSXP, map.rows(), map.cols()));
+    memcpy( REAL(Rmap), map.data(), map.rows()*map.cols()*sizeof(double) );
+    SET_VECTOR_ELT( Rres, 0, Rmap );
+
+    SEXP Rid2s;
+    PROTECT( Rid2s = Rf_allocMatrix(INTSXP, id2spatial.rows(), id2spatial.cols()));
+    memcpy( INTEGER(Rid2s), id2spatial.data(), id2spatial.rows()*id2spatial.cols()*sizeof(int) );
+    SET_VECTOR_ELT( Rres, 1, Rid2s );
+
+    SEXP Rcost;
+    PROTECT( Rcost = Rf_allocVector(REALSXP, 1) );
+    memcpy( REAL(Rcost), &cost, sizeof(double) );
+    SET_VECTOR_ELT( Rres, 2, Rcost );
+
+
+    UNPROTECT(4);
+
+
+    return Rres;
+
+  };
 
 
 

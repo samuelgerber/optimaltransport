@@ -2,6 +2,7 @@ useDynLib("mop")
 
 export(
   "transport",
+  "neighbor.min.flow",
   "multiscale.transport.solve",
   "multiscale.transport.create.lp",
   "multiscale.transport.setup.default",
