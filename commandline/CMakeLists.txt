@@ -7,6 +7,10 @@ TARGET_LINK_LIBRARIES (TransportLP ${CPLEX_LIBRARIES} )
 ADD_EXECUTABLE(MatrixMinFlow MatrixMinFlow.cxx)
 TARGET_LINK_LIBRARIES (MatrixMinFlow ${CPLEX_LIBRARIES} )
 
+ADD_EXECUTABLE(Grid3dMinFlow Grid3dMinFlow.cxx)
+TARGET_LINK_LIBRARIES (Grid3dMinFlow ${CPLEX_LIBRARIES} )
+
+
 ADD_EXECUTABLE(SinkhornTransport SinkhornTransport.cxx)
 TARGET_LINK_LIBRARIES (SinkhornTransport)
   

@@ -35,6 +35,7 @@
 #include "TransportLP.h"
 
 #include "MatrixMinFlow.h"
+#include "Grid3dMinFlow.h"
 
 #include "mop_config.h"
 
@@ -1031,19 +1032,22 @@ extern "C" {
   };
 
 
-  SEXP neighborMinFlow(SEXP Rx1, SEXP Rx2, SEXP Rm, SEXP Rn){
+  SEXP neighborMinFlow(SEXP Rx1, SEXP Rx2, SEXP Rweights, SEXP Rm, SEXP Rn, SEXP Rlambda){
     using namespace Eigen;
 
     int m = *INTEGER(Rm);
     int n = *INTEGER(Rn);
     double *x1 = REAL(Rx1);
     double *x2 = REAL(Rx2);
+    double *weights = REAL(Rweights);
+    double lambda = *REAL(Rlambda);
 
     Map<MatrixXd> X1(x1, m, n);
     Map<MatrixXd> X2(x2, m, n);
+    Map<MatrixXd> W(weights, m, n);
 
     MatrixMinFlow<double> mmf;
-    std::map< std::pair<int, int>, double> plan = mmf.solve(X1, X2);
+    std::map< std::pair<int, int>, double> plan = mmf.solve(X1, X2, W, lambda);
     
     
     MatrixXd map(plan.size(), 3);
@@ -1053,8 +1057,8 @@ extern "C" {
          it!=plan.end(); ++it ){
 
       const std::pair<int, int> &p = it->first;
-      map( mapIndex, 0 ) = p.first;
-      map( mapIndex, 1 ) = p.second;
+      map( mapIndex, 0 ) = p.first+1;
+      map( mapIndex, 1 ) = p.second+1;
       map( mapIndex, 2 ) = it->second;;
 
       mapIndex++;
@@ -1090,6 +1094,68 @@ extern "C" {
 
   };
 
+
+  SEXP neighborMinFlow3d(SEXP Rx1, SEXP Rx2, SEXP Rm, SEXP Rn, SEXP Ro, SEXP Rlambda){
+    using namespace Eigen;
+
+    int m = *INTEGER(Rm);
+    int n = *INTEGER(Rn);
+    int o = *INTEGER(Ro);
+    double *x1 = REAL(Rx1);
+    double *x2 = REAL(Rx2);
+    double lambda = *REAL(Rlambda);
+
+    typedef Grid3dMinFlow<double>::TensorXp TensorXp;
+    TensorMap<TensorXp> X1(x1, m, n, o);
+    TensorMap<TensorXp> X2(x2, m, n, o);
+
+    Grid3dMinFlow<double> mmf;
+    std::map< std::pair<int, int>, double> plan = mmf.solve(X1, X2, lambda);
+    
+    
+    MatrixXd map(plan.size(), 3);
+    int mapIndex = 0;
+
+    for( std::map< std::pair<int, int>, double>::iterator it = plan.begin(); 
+         it!=plan.end(); ++it ){
+
+      const std::pair<int, int> &p = it->first;
+      map( mapIndex, 0 ) = p.first+1;
+      map( mapIndex, 1 ) = p.second+1;
+      map( mapIndex, 2 ) = it->second;;
+
+      mapIndex++;
+    }
+    
+    double cost = mmf.getCost();
+    
+    MatrixXi &id2spatial = mmf.getId2Spatial();
+
+    SEXP Rres;
+    PROTECT( Rres = Rf_allocVector( VECSXP, 3) );
+
+    SEXP Rmap;
+    PROTECT( Rmap = Rf_allocMatrix(REALSXP, map.rows(), map.cols()));
+    memcpy( REAL(Rmap), map.data(), map.rows()*map.cols()*sizeof(double) );
+    SET_VECTOR_ELT( Rres, 0, Rmap );
+
+    SEXP Rid2s;
+    PROTECT( Rid2s = Rf_allocMatrix(INTSXP, id2spatial.rows(), id2spatial.cols()));
+    memcpy( INTEGER(Rid2s), id2spatial.data(), id2spatial.rows()*id2spatial.cols()*sizeof(int) );
+    SET_VECTOR_ELT( Rres, 1, Rid2s );
+
+    SEXP Rcost;
+    PROTECT( Rcost = Rf_allocVector(REALSXP, 1) );
+    memcpy( REAL(Rcost), &cost, sizeof(double) );
+    SET_VECTOR_ELT( Rres, 2, Rcost );
+
+
+    UNPROTECT(4);
+
+
+    return Rres;
+
+  };
 
 
 }//end extern C

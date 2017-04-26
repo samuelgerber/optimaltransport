@@ -3,6 +3,10 @@ useDynLib("mop")
 export(
   "transport",
   "neighbor.min.flow",
+  "neighbor.min.flow.plot",
+  "neighbor.min.flow3d",
+  "neighbor.min.flow3d.plot",
+  "neighbor.min.flow3d.plot3d",
   "multiscale.transport.solve",
   "multiscale.transport.create.lp",
   "multiscale.transport.setup.default",

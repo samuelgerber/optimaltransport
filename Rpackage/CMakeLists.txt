@@ -12,6 +12,7 @@ ADD_CUSTOM_TARGET(R_mop
     COMMAND rsync -aC ${R_SOURCE_DIR}/mop . 
     COMMAND rsync -aC ${CMAKE_SOURCE_DIR}/external/gmra/lib/ ./mop/src 
     COMMAND rsync -aC ${R_SOURCE_DIR}/Eigen/ ./mop/src/Eigen 
+    COMMAND rsync -aC ${R_SOURCE_DIR}/unsupported/ ./mop/src/unsupported 
     COMMAND cp 
     ${CMAKE_SOURCE_DIR}/lib/SinkhornTransport.h
     ${CMAKE_SOURCE_DIR}/lib/SparseSinkhornTransport.h
@@ -36,6 +37,7 @@ ADD_CUSTOM_TARGET(R_mop
     ${CMAKE_SOURCE_DIR}/lib/CPLEXNetworkSolver.h
     ${CMAKE_SOURCE_DIR}/lib/LPSolver.h
     ${CMAKE_SOURCE_DIR}/lib/MatrixMinFLow.h
+    ${CMAKE_SOURCE_DIR}/lib/Grid3dMinFLow.h
     ${CMAKE_SOURCE_DIR}/lib/mosek.h
     ${CMAKE_SOURCE_DIR}/external/gmra/external/metrics/lib/EigenMetric.h
     ${CMAKE_SOURCE_DIR}/external/gmra/external/metrics/lib/EigenEuclideanMetric.h 
