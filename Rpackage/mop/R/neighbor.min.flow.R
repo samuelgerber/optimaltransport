@@ -185,17 +185,23 @@ neighbor.min.flow3d.plot3d <- function( nmf, colMap = t( c(0,0,0) ), cex=1,
 }
 
 
-
+#delta is the current potential from source to target, i.e. at step 0 delta = target - source
+#the interpolate function computes one discrete step of the flow, by moving the maximum amount 
+#possible in delta to it's neighbors
 neighbor.min.flow.interpolate <- function(X1, mf, lambda){
   X1 = X1/sum(X1)
+  Xi = matrix(0, nrow=nrow(mf$plan), ncol=3)
   for(i in 1:nrow(mf$plan) ){
     x = mf$id2s[ mf$plan[i, 1], 1] + 1
     y = mf$id2s[ mf$plan[i, 1], 2] + 1
     xx = mf$id2s[ mf$plan[i, 2], 1] + 1
     yy = mf$id2s[ mf$plan[i, 2], 2] + 1
     w = lambda*mf$plan[i, 3] 
-    X1[x,y] = X1[x,y] - w
-    X1[xx,yy] = X1[xx,yy] + w
+    Xi[i, 1] = x + lambda*(xx-x)
+    Xi[i, 2] = y + lambda*(yy-y)
+    Xi[i, 3] = w
   }
-  X1
+  Xi
 }
+
+
