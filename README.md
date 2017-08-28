@@ -15,13 +15,19 @@ This code is designed for fast multiscale optimal transport but also permits sin
 
 ## Requirements
 
-Libraries:
+R packages:
+
+* gmra https://github.com/suppechasper/gmra
+
+
+C/C++ Libraries:
 
 * Eigen
 * CPLEX
      * Alternatively MOSEK or GLPK (currently setup for CPLEX but few modifications are required to change it to MOSEK or GLPK, edit the .cxx driver files in commandline accordingly to use the different solver header files and instantiate the solver you want to use. Then edit CMake files to point to the library specific header files and libraries. )
 
 ## R Package mop Installation
+
 
 This package depends on linear programming libraries. Currently it supports GLPK,
 CPLEX and MOSEK. CPLEX is typically the fastest.
