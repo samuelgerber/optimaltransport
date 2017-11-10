@@ -16,10 +16,10 @@ class CPLEXNetworkSolver : public LPSolver{
 
   private:
     typedef  LPSolver::Status Status;
- 
+
 
     CPXENVptr env;
-    
+
     std::vector<int> sInd;
     std::vector<int> tInd;
 
@@ -53,7 +53,7 @@ class CPLEXNetworkSolver : public LPSolver{
         CPXsetdblparam( env, CPX_PARAM_NETEPRHS, 1e-7 );
         CPXsetintparam (env, CPX_PARAM_ADVIND, 2);
         CPXsetdblparam( env, CPX_PARAM_EPPER, 1e-7 );
-        
+
         lambda = l;
         ns = 0;
         solstat = CPX_STAT_ABORT_USER;
@@ -73,11 +73,11 @@ class CPLEXNetworkSolver : public LPSolver{
      deleteLP();
      ns=nSource;
      nt=nTarget;
-     
+
      if(lambda > 0){
        rowStatus.resize( 1, CPX_BASIC );
        dual.resize( 1, 0);
-       
+
        primal.resize( nt, 0);
        colStatus.resize( nt, CPX_AT_LOWER );
      }
@@ -102,7 +102,7 @@ class CPLEXNetworkSolver : public LPSolver{
 
        //Add nodes
        CPXNETaddnodes( env, prob, mtmp.size(), mtmp.data(), NULL);
-       
+
        //add arcs from source to target nodes with bounded capacity
        CPXNETaddarcs( env, prob, sInd.size(), sInd.data(), tInd.data(), colLB.data(), colUB.data(),
           coeff.data(), NULL );
@@ -117,25 +117,25 @@ class CPLEXNetworkSolver : public LPSolver{
 
        for(int i=0; i<nt; i++){
          double m = fabs(mass[ns+i]);
-         double delta = m*lambda; 
+         double delta = m*lambda;
          lb[i] =  m - delta;
          ub[i] =  m + delta;
-         tsInd[i] = ns + i;       
+         tsInd[i] = ns + i;
        }
 
 
        CPXNETaddarcs( env, prob, tsInd.size(), tsInd.data(), ttInd.data(), lb.data(), ub.data(),
           NULL, NULL );
-     } 
+     }
      else{
        CPXNETaddnodes( env, prob, mass.size(), mass.data(), NULL);
-       CPXNETaddarcs( env, prob, sInd.size(), sInd.data(), tInd.data(), colLB.data(), colUB.data(), 
+       CPXNETaddarcs( env, prob, sInd.size(), sInd.data(), tInd.data(), colLB.data(), colUB.data(),
           coeff.data(), NULL );
      }
 
      CPXNETchgobjsen( env, prob, CPX_MIN );
      CPXNETcopybase( env, prob, colStatus.data(), rowStatus.data() );
-    
+
 
      status = CPXNETprimopt (env, prob);
      //std::cout << "CPXNET optimization status: " << status << std::endl;
@@ -152,10 +152,10 @@ class CPLEXNetworkSolver : public LPSolver{
      }
 
      iCount = CPXNETgetitcnt( env, prob);
-     
+
      CPXNETgetbase( env, prob, colStatus.data(), rowStatus.data());
-    
-    /* 
+
+    /*
      for(int i=0; i<colStatus.size(); i++){
        std::cout << colStatus[i] << ", ";
      }
@@ -207,7 +207,7 @@ class CPLEXNetworkSolver : public LPSolver{
      rowStatus.resize( rowStatus.size() + n, CPX_BASIC );
      dual.resize( dual.size() + n, 0);
    };
- 
+
 
 
    virtual double getRowDual(int row){
@@ -219,7 +219,7 @@ class CPLEXNetworkSolver : public LPSolver{
    virtual double getColPrimal(int col){
      return primal[col];
    };
-   
+
 
    virtual void setRowBounds(int i, double m){
      mass[i] = m;
@@ -227,7 +227,7 @@ class CPLEXNetworkSolver : public LPSolver{
 
 
    virtual double getRowBounds(int i){
-     return mass[i]; 
+     return mass[i];
    };
 
    virtual void setColBounds(int i){
@@ -244,18 +244,18 @@ class CPLEXNetworkSolver : public LPSolver{
      return convertFromCPLEX( colStatus[col] );
 
    };
-   
+
    virtual Status getRowStatus(int row){
      return convertFromCPLEX( rowStatus[row] );
    };
-   
+
    virtual void setColStatus(int col, Status s){
      //std::cout << s << " -> ";
      //std::cout << convertToCPLEX(s) << std::endl;
      colStatus[col] = convertToCPLEX(s);
    };
 
-   
+
    virtual void setRowStatus(int row, Status s){
      if(s == LPSolver::BASIC){
        rowStatus[row] = CPX_BASIC;
@@ -265,7 +265,7 @@ class CPLEXNetworkSolver : public LPSolver{
      }
    };
 
-   
+
    virtual void setCoefficent(int i, double cost){
      coeff[i] = cost;
    };
@@ -275,15 +275,15 @@ class CPLEXNetworkSolver : public LPSolver{
      tInd[col] = t;
      sInd[col] = s;
    };
-   
+
    virtual int getColConstraints(int col, int *ind, double *val){
      ind[0] = sInd[col];
      ind[1] = tInd[col];
      val[0] = 1;
      val[1] = -1;
-     return 2;    
+     return 2;
    };
-   
+
 
    virtual double getObjectiveValue(){
      return objValue;
@@ -295,7 +295,7 @@ class CPLEXNetworkSolver : public LPSolver{
    };
 
 
-   virtual int getNumRows(){     
+   virtual int getNumRows(){
      return dual.size();
    };
 
@@ -303,7 +303,7 @@ class CPLEXNetworkSolver : public LPSolver{
    virtual int getNumCols(){
      return primal.size();
    };
-   
+
    virtual void setupStdBasis(){
      for(int i= 0; i< getNumCols(); i++){
        colStatus[i] = CPX_AT_LOWER;
@@ -332,7 +332,7 @@ class CPLEXNetworkSolver : public LPSolver{
        case CPX_FREE_SUPER:
          return LPSolver::FREE;
      }
-     return LPSolver::END; 
+     return LPSolver::END;
    };
 
 

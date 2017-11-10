@@ -34,8 +34,11 @@
 
 #include "TransportLP.h"
 
+
+#ifdef MOP_USE_CPLEX
 #include "MatrixMinFlow.h"
 #include "Grid3dMinFlow.h"
+#endif
 
 #include "mop_config.h"
 
@@ -66,12 +69,12 @@
 extern "C" {
   int trpCounter;
   int propCounter;
-  
+
   /* called from .onLoad */
   SEXP mop_load(void){
     trpCounter = 0;
     propCounter = 0;
-    
+
     return R_NilValue;
   };
 
@@ -80,8 +83,8 @@ extern "C" {
 
 
   enum  Optimizer {
-    GLPK_PRIMAL_SIMPLEX = 0, 
-    GLPK_DUAL_SIMPLEX   = 1, 
+    GLPK_PRIMAL_SIMPLEX = 0,
+    GLPK_DUAL_SIMPLEX   = 1,
     GLPK_INTPOINT       = 2,
     GLPK                = 10,
     MSK_SIMPLEX_FREE    = 11,
@@ -90,11 +93,11 @@ extern "C" {
     MSK_INTPOINT        = 14,
     MSK_CONCURRENT      = 15,
     MSK                 = 20,
-    CPLEX_AUTO          = 21,      
-    CPLEX_BARRIER       = 22,      
-    CPLEX_DUAL          = 23,      
-    CPLEX_PRIMAL        = 24,      
-    CPLEX_SIFTING       = 25,      
+    CPLEX_AUTO          = 21,
+    CPLEX_BARRIER       = 22,
+    CPLEX_DUAL          = 23,
+    CPLEX_PRIMAL        = 24,
+    CPLEX_SIFTING       = 25,
     CPLEX_NETWORK       = 26,
     CPLEX_NETWORK_2     = 27,
     CPLEX_CONCURRENT    = 28,
@@ -204,16 +207,16 @@ extern "C" {
     return solver;
   }
 
-  /**/  
+  /**/
   /* Multiscale Transport Calls */
   SEXP multiscaleTransport(GMRANeighborhood<double> *nh1,
       GMRANeighborhood<double> *nh2, int d1, int d2, double p, int nScales1, int
       nScales2, std::vector<double> &w1, std::vector<double> &w2,
       MultiscaleTransport<double> &transport, bool matchScale,
-      bool multiscaleCost, bool multiscaleSolution){ 
-    
+      bool multiscaleCost, bool multiscaleSolution){
+
     using namespace Eigen;
-    
+
     typedef TransportPlan<double>::Path Path;
 
 
@@ -225,7 +228,7 @@ extern "C" {
       GMRAMultiscaleTransportLevel<double>::buildTransportLevels(*nh2, w2,
           multiscaleCost);
 
-  
+
 
     std::vector< TransportPlan<double> * > sols = transport.solve( t1Levels,
         t2Levels, p, nScales1, nScales2, matchScale);
@@ -238,7 +241,7 @@ extern "C" {
       TransportPlan<double> *s = sols[i];
       cost(i) = s->cost;
       vars(i) = s->getNumberOfPaths();
-      
+
     }
 
     int nVars = 17;
@@ -249,7 +252,7 @@ extern "C" {
     else{
       PROTECT( Rres = Rf_allocVector( VECSXP, 2 + nVars*sols.size() ));
     }
-    
+
     SEXP Rcost;
     PROTECT(Rcost = Rf_allocVector(REALSXP, cost.size()));
     memcpy( REAL(Rcost), cost.data(), cost.size()*sizeof(double) );
@@ -259,16 +262,16 @@ extern "C" {
     PROTECT(Rvars = Rf_allocVector(INTSXP, vars.size()));
     memcpy( INTEGER(Rvars), vars.data(), vars.size()*sizeof(int) );
     SET_VECTOR_ELT(Rres, 1, Rvars);
-   
 
 
 
 
 
-    
+
+
     for(unsigned int i=0; i < sols.size(); i++){
       TransportPlan<double> *s = sols[i];
-    
+
       int n1 = s->source->getNodes().size();
       int n2 = s->target->getNodes().size();
       MatrixXd sPoints(d1, n1);
@@ -280,33 +283,33 @@ extern "C" {
       typedef TransportNodeVector::const_iterator TransportNodeVectorCIterator;
       VectorXd pFrom = VectorXd::Zero(n1);
       VectorXd pTo = VectorXd::Zero(n2);
-      
+
       for(TransportNodeVectorCIterator it = s->source->getNodes().begin(); it !=
           s->source->getNodes().end(); ++it){
-        
+
         GMRATransportNode<double> *node = (GMRATransportNode<double> *)  *it;
         int fromIndex = node->getID();
-        
+
         double pi = node->getPotential();
-        pFrom(fromIndex) = pi;        
-        
+        pFrom(fromIndex) = pi;
+
         sPoints.col(fromIndex)= node->getGMRANode()->getCenter();
         fromMass(fromIndex) = node->getMass();
-        
+
       }
 
       for(TransportNodeVectorCIterator it = s->target->getNodes().begin(); it !=
           s->target->getNodes().end(); ++it){
-        
+
         GMRATransportNode<double> *node = (GMRATransportNode<double> *) *it;
         int toIndex = node->getID();
-        
+
         double pi = node->getPotential();
-        pTo(toIndex) = pi;        
-        
+        pTo(toIndex) = pi;
+
         tPoints.col(toIndex) = node->getGMRANode()->getCenter();
-        
-        toMass(toIndex) = node->getMass(); 
+
+        toMass(toIndex) = node->getMass();
       }
 
       VectorXd costsFrom =  VectorXd::Zero( n1 );
@@ -318,32 +321,32 @@ extern "C" {
         Path &path = s->pathIteratorCurrent();
         GMRATransportNode<double> *from = (GMRATransportNode<double> *) path.from;
         GMRATransportNode<double> *to = (GMRATransportNode<double> *) path.to;
-       
+
         if(path.w > 0){
           nPaths++;
           double c = path.cost * path.w;
-          costsFrom( from->getID() ) += c;        
+          costsFrom( from->getID() ) += c;
           costsTo( to->getID() ) += c;
         }
       }
 
 
-      SEXP RcFrom; 
+      SEXP RcFrom;
       PROTECT(RcFrom = Rf_allocVector(REALSXP, costsFrom.size()));
       memcpy( REAL(RcFrom), costsFrom.data(), costsFrom.size() * sizeof(double) );
       SET_VECTOR_ELT( Rres, 2 + nVars*i, RcFrom);
 
-      SEXP RcTo; 
+      SEXP RcTo;
       PROTECT(RcTo = Rf_allocVector(REALSXP, costsTo.size()));
       memcpy( REAL(RcTo), costsTo.data(), costsTo.size() * sizeof(double) );
       SET_VECTOR_ELT( Rres, 2 + nVars*i + 1, RcTo);
 
-      SEXP RcFromPot; 
+      SEXP RcFromPot;
       PROTECT( RcFromPot = Rf_allocVector(REALSXP, pFrom.size()) );
       memcpy( REAL(RcFromPot), pFrom.data(), pFrom.size() * sizeof(double) );
       SET_VECTOR_ELT( Rres, 2 + nVars*i + 2, RcFromPot);
 
-      SEXP RcToPot; 
+      SEXP RcToPot;
       PROTECT( RcToPot = Rf_allocVector(REALSXP, pTo.size()) );
       memcpy( REAL(RcToPot), pTo.data(), pTo.size() * sizeof(double) );
       SET_VECTOR_ELT( Rres, 2 + nVars*i + 3, RcToPot);
@@ -371,28 +374,28 @@ extern "C" {
       SEXP Rmap;
       PROTECT( Rmap = Rf_allocMatrix(REALSXP, map.rows(), map.cols()));
       memcpy( REAL(Rmap), map.data(), map.rows()*map.cols()*sizeof(double) );
-      SET_VECTOR_ELT( Rres, 2+nVars*i+4, Rmap); 
+      SET_VECTOR_ELT( Rres, 2+nVars*i+4, Rmap);
 
       SEXP RnTotal;
       int totalPaths = s->getNumberOfPaths();
       PROTECT( RnTotal = Rf_allocVector(INTSXP, 1) );
       memcpy( INTEGER(RnTotal), &totalPaths, sizeof(int) );
-      SET_VECTOR_ELT(Rres, 2+nVars*i+5, RnTotal); 
+      SET_VECTOR_ELT(Rres, 2+nVars*i+5, RnTotal);
 
       SEXP Rfrom;
       PROTECT(Rfrom = Rf_allocMatrix(REALSXP, sPoints.rows(), sPoints.cols()));
       memcpy( REAL(Rfrom), sPoints.data(), sPoints.rows()*sPoints.cols()*sizeof(double) );
-      SET_VECTOR_ELT(Rres, 2+nVars*i+6, Rfrom); 
+      SET_VECTOR_ELT(Rres, 2+nVars*i+6, Rfrom);
 
       SEXP Rto;
       PROTECT(Rto = Rf_allocMatrix(REALSXP, tPoints.rows(), tPoints.cols()));
       memcpy( REAL(Rto), tPoints.data(), tPoints.rows()*tPoints.cols()*sizeof(double) );
-      SET_VECTOR_ELT(Rres, 2+nVars*i+7, Rto); 
+      SET_VECTOR_ELT(Rres, 2+nVars*i+7, Rto);
 
       SEXP RfromMass;
       PROTECT(RfromMass = Rf_allocVector(REALSXP, fromMass.size()));
       memcpy( REAL(RfromMass), fromMass.data(), fromMass.size()*sizeof(double) );
-      SET_VECTOR_ELT(Rres, 2+nVars*i+8, RfromMass); 
+      SET_VECTOR_ELT(Rres, 2+nVars*i+8, RfromMass);
 
       SEXP RtoMass;
       PROTECT(RtoMass = Rf_allocVector(REALSXP, toMass.size()));
@@ -406,7 +409,7 @@ extern "C" {
       SEXP Rtime;
       PROTECT( Rtime = Rf_allocVector(REALSXP, 3) );
       memcpy( REAL(Rtime), time, sizeof(double)*3 );
-      SET_VECTOR_ELT(Rres, 2+nVars*i+10, Rtime); 
+      SET_VECTOR_ELT(Rres, 2+nVars*i+10, Rtime);
 
 
 
@@ -438,7 +441,7 @@ extern "C" {
       memcpy(INTEGER(RsizeFrom), sizeFrom.data(),
           sizeFrom.size()*sizeof(int));
       SET_VECTOR_ELT(Rres, 2 + nVars*i+12, RsizeFrom);
-      
+
       SEXP RradiusFrom;
       PROTECT(RradiusFrom = Rf_allocVector(REALSXP, radiusFrom.size()));
       memcpy( REAL(RradiusFrom), radiusFrom.data(),
@@ -476,7 +479,7 @@ extern "C" {
           sizeTo.size()*sizeof(int));
       SET_VECTOR_ELT(Rres, 2 + nVars*i+15, RsizeTo);
 
-      
+
       SEXP RradiusTo;
       PROTECT( RradiusTo = Rf_allocVector(REALSXP, radiusTo.size()));
       memcpy( REAL(RradiusTo), radiusTo.data(),
@@ -507,13 +510,13 @@ extern "C" {
       for(finest->pathIteratorBegin(); ! finest->pathIteratorIsAtEnd();
           finest->pathIteratorNext() ){
 
-        
+
         Path &path = finest->pathIteratorCurrent();
-        if(path.w > 0){       
+        if(path.w > 0){
           TransportNode<double> *from = (GMRATransportNode<double> *)  path.from;
           int fIndex= pFrom.rows()-1;
           while(from != NULL){
-            pFrom(fIndex, pId) = from->getID(); 
+            pFrom(fIndex, pId) = from->getID();
             from = from->getParent();
             fIndex--;
           }
@@ -521,14 +524,14 @@ extern "C" {
           TransportNode<double> *to = (GMRATransportNode<double> *) path.to;
           int tIndex= pTo.rows()-1;
           while(to != NULL){
-            pTo(tIndex, pId) = to->getID(); 
+            pTo(tIndex, pId) = to->getID();
             to = to->getParent();
             tIndex--;
           }
           ++pId;
 
         }
-        
+
       }
 
       int index = nVars*sols.size() + 2;
@@ -537,13 +540,13 @@ extern "C" {
       PROTECT(RpFrom = Rf_allocMatrix(INTSXP, pFrom.rows(), pFrom.cols()));
       memcpy( INTEGER(RpFrom), pFrom.data(), pFrom.rows()*pFrom.cols()*sizeof(int) );
       SET_VECTOR_ELT(Rres, index, RpFrom);
-   
+
       SEXP RpTo;
       PROTECT(RpTo = Rf_allocMatrix(INTSXP, pTo.rows(), pTo.cols()));
       memcpy( INTEGER(RpTo), pTo.data(), pTo.rows()*pTo.cols()*sizeof(int) );
       SET_VECTOR_ELT(Rres, index+1, RpTo);
-      
-     
+
+
       std::vector<double> mCost = finest->getMultiscaleTransportCost(p);
       SEXP RmCost;
       PROTECT(RmCost = Rf_allocVector(REALSXP, mCost.size() ) );
@@ -562,7 +565,7 @@ extern "C" {
     for(unsigned int i=0; i < sols.size(); i++){
       delete sols[i];
     }
-    
+
     for(unsigned int i=0; i < t1Levels.size(); i++){
       delete t1Levels[i];
     }
@@ -619,7 +622,7 @@ extern "C" {
 
     SEXP Rgmra_pointer = Rf_getAttrib(Rgmra, Rf_install("gmra_ptr") );
     GMRATree<double> *gmra = static_cast<GMRATree<double> *>( R_ExternalPtrAddr(Rgmra_pointer) );
-    
+
 
     NodeDistance<double> *dist = getNodeDistance(RdType);
     gmra->computeRadii(dist);
@@ -638,40 +641,40 @@ extern "C" {
 
 
   //
-  MultiscaleTransportLP<double> *getTransportLP(SEXP Rtrp){    
-    
-    SEXP Rtrp_pointer = Rf_getAttrib(Rtrp, Rf_install("mop_trp_lp_ptr") ); 
-    
+  MultiscaleTransportLP<double> *getTransportLP(SEXP Rtrp){
+
+    SEXP Rtrp_pointer = Rf_getAttrib(Rtrp, Rf_install("mop_trp_lp_ptr") );
+
     MultiscaleTransportLP<double> *trp =
       static_cast<MultiscaleTransportLP<double> *>(
           R_ExternalPtrAddr(Rtrp_pointer) );
-    
+
     return trp;
-  
+
   };
 
 
 
   //
   SEXP createTransportLP(SEXP RoType, SEXP Rlambda){
- 
+
     double lambda = *REAL(Rlambda);
     Optimizer optimizer = (Optimizer)  * INTEGER(RoType) ;
 
     LPSolver *solver = createSolver(optimizer, lambda);
     MultiscaleTransportLP<double> *transport = new MultiscaleTransportLP<double>(solver);
-      
+
     SEXP Rid;
     PROTECT(Rid = Rf_allocVector(INTSXP, 1));
     INTEGER(Rid)[0] = trpCounter;
     SEXP ptr = R_MakeExternalPtr(transport, Rf_install("mop"), R_NilValue);
     PROTECT(ptr);
     Rf_setAttrib(Rid, Rf_install("mop_trp_lp_ptr"), ptr);
-    
+
     ++trpCounter;
 
     UNPROTECT(2);
-    return Rid; 
+    return Rid;
   };
 
 
@@ -710,7 +713,7 @@ extern "C" {
   };
 
 
-  
+
   SEXP addPotentialNeighborhoodStrategy(SEXP Rtrp, SEXP Rthres,  SEXP Rtol, SEXP RnIter, SEXP Rsort, SEXP Rexpand, SEXP RmaxAdd){
     double threshold = *REAL(Rthres);
     double tolerance = *REAL(Rtol);
@@ -731,13 +734,13 @@ extern "C" {
 
 
   //Propagation strategies
-  PropagationStrategy<double> *getPropagationStrategy(SEXP Rprop){    
-    
-    SEXP Rprop_pointer = Rf_getAttrib(Rprop, Rf_install("mop_trp_prop_ptr") ); 
-    
+  PropagationStrategy<double> *getPropagationStrategy(SEXP Rprop){
+
+    SEXP Rprop_pointer = Rf_getAttrib(Rprop, Rf_install("mop_trp_prop_ptr") );
+
     PropagationStrategy<double> *prop = static_cast<
       PropagationStrategy<double>* > ( R_ExternalPtrAddr(Rprop_pointer) );
-    
+
     return prop;
   };
 
@@ -745,102 +748,102 @@ extern "C" {
 
   //
   SEXP createNeighborhoodPropagationStrategy(SEXP Rfactor){
- 
+
     double factor = *REAL(Rfactor);
-     
-    NeighborhoodPropagationStrategy<double> *prop = new NeighborhoodPropagationStrategy<double>(factor); 
-    
+
+    NeighborhoodPropagationStrategy<double> *prop = new NeighborhoodPropagationStrategy<double>(factor);
+
     SEXP Rid;
     PROTECT(Rid = Rf_allocVector(INTSXP, 1));
     INTEGER(Rid)[0] = propCounter;
     SEXP ptr = R_MakeExternalPtr(prop, Rf_install("mop"), R_NilValue);
     PROTECT(ptr);
     Rf_setAttrib(Rid, Rf_install("mop_trp_prop_ptr"), ptr);
-    
+
     ++propCounter;
 
     UNPROTECT(2);
-    return Rid; 
+    return Rid;
   };
 
   SEXP createCapacityPropagationStrategy(SEXP Rk, SEXP Rfactor){
- 
+
     double factor = *REAL(Rfactor);
     int k = *INTEGER(Rk);
-     
-    CapacityPropagationStrategy<double> *prop = new CapacityPropagationStrategy<double>(k, factor); 
-    
+
+    CapacityPropagationStrategy<double> *prop = new CapacityPropagationStrategy<double>(k, factor);
+
     SEXP Rid;
     PROTECT(Rid = Rf_allocVector(INTSXP, 1));
     INTEGER(Rid)[0] = propCounter;
     SEXP ptr = R_MakeExternalPtr(prop, Rf_install("mop"), R_NilValue);
     PROTECT(ptr);
     Rf_setAttrib(Rid, Rf_install("mop_trp_prop_ptr"), ptr);
-    
+
     ++propCounter;
 
     UNPROTECT(2);
-    return Rid; 
+    return Rid;
   };
 
     SEXP createIteratedCapacityPropagationStrategy(SEXP Rk, SEXP Rfactor){
- 
+
     double factor = *REAL(Rfactor);
     int k = *INTEGER(Rk);
-     
+
     IteratedCapacityPropagationStrategy<double> *prop = new
-	    IteratedCapacityPropagationStrategy<double>(k, factor); 
-    
+	    IteratedCapacityPropagationStrategy<double>(k, factor);
+
     SEXP Rid;
     PROTECT(Rid = Rf_allocVector(INTSXP, 1));
     INTEGER(Rid)[0] = propCounter;
     SEXP ptr = R_MakeExternalPtr(prop, Rf_install("mop"), R_NilValue);
     PROTECT(ptr);
     Rf_setAttrib(Rid, Rf_install("mop_trp_prop_ptr"), ptr);
-    
+
     ++propCounter;
 
     UNPROTECT(2);
-    return Rid; 
+    return Rid;
   };
 
   SEXP createRandomizedNeighborhoodPropagationStrategy(SEXP RnRandom, SEXP Rfactor){
- 
+
     int nRadnom = *INTEGER( RnRandom );
     double factor = *REAL( Rfactor );
-     
+
     RandomizedNeighborhoodPropagationStrategy<double> *prop = new
-      RandomizedNeighborhoodPropagationStrategy<double>(nRadnom, factor); 
-    
+      RandomizedNeighborhoodPropagationStrategy<double>(nRadnom, factor);
+
     SEXP Rid;
     PROTECT(Rid = Rf_allocVector(INTSXP, 1));
     INTEGER(Rid)[0] = propCounter;
     SEXP ptr = R_MakeExternalPtr(prop, Rf_install("mop"), R_NilValue);
     PROTECT(ptr);
     Rf_setAttrib(Rid, Rf_install("mop_trp_prop_ptr"), ptr);
-    
+
     ++propCounter;
 
     UNPROTECT(2);
-    return Rid; 
+    return Rid;
   };
 
 
   SEXP createMaxEntropyPropagationStrategy(){
-     
-    MaxEntropyPropagationStrategy<double> *prop = new MaxEntropyPropagationStrategy<double>(); 
-    
+
+    MaxEntropyPropagationStrategy<double> *prop = new MaxEntropyPropagationStrategy<double>();
+
     SEXP Rid;
     PROTECT(Rid = Rf_allocVector(INTSXP, 1));
     INTEGER(Rid)[0] = propCounter;
     SEXP ptr = R_MakeExternalPtr(prop, Rf_install("mop"), R_NilValue);
     PROTECT(ptr);
     Rf_setAttrib(Rid, Rf_install("mop_trp_prop_ptr"), ptr);
-    
+
     ++propCounter;
 
     UNPROTECT(2);
-    return Rid; 
+    return Rid;
   };
 
 
@@ -852,21 +855,21 @@ extern "C" {
     int nIter = *INTEGER(Riter);
 
 
-     
+
     SinkhornPropagationStrategy<double> *prop = new
-      SinkhornPropagationStrategy<double>(lambda, tolerance, threshold, nIter); 
-    
+      SinkhornPropagationStrategy<double>(lambda, tolerance, threshold, nIter);
+
     SEXP Rid;
     PROTECT(Rid = Rf_allocVector(INTSXP, 1));
     INTEGER(Rid)[0] = propCounter;
     SEXP ptr = R_MakeExternalPtr(prop, Rf_install("mop"), R_NilValue);
     PROTECT(ptr);
     Rf_setAttrib(Rid, Rf_install("mop_trp_prop_ptr"), ptr);
-    
+
     ++propCounter;
 
     UNPROTECT(2);
-    return Rid; 
+    return Rid;
   };
 
 
@@ -954,7 +957,7 @@ extern "C" {
         weights2, *transport, matchScale, multiscaleCost, multiscaleSolution);
 
     delete nh1;
-    delete nh2; 
+    delete nh2;
 
     return res;
 
@@ -1050,14 +1053,20 @@ extern "C" {
     Map<MatrixXd> X2(x2, m, n);
     Map<MatrixXd> W(weights, m, n);
 
+    std::map< std::pair<int, int>, double> plan;
+    MatrixXi id2spatial;
+    double cost;
+#ifdef MOP_USE_CPLEX
     MatrixMinFlow<double> mmf;
-    std::map< std::pair<int, int>, double> plan = mmf.solve(X1, X2, W, lambda);
-    
-    
+    plan = mmf.solve(X1, X2, W, lambda);
+    cost = mmf.getCost();
+    id2spatial = mmf.getId2Spatial();
+#endif
+
     MatrixXd map(plan.size(), 3);
     int mapIndex = 0;
 
-    for( std::map< std::pair<int, int>, double>::iterator it = plan.begin(); 
+    for( std::map< std::pair<int, int>, double>::iterator it = plan.begin();
          it!=plan.end(); ++it ){
 
       const std::pair<int, int> &p = it->first;
@@ -1067,10 +1076,8 @@ extern "C" {
 
       mapIndex++;
     }
-    
-    double cost = mmf.getCost();
-    
-    MatrixXi &id2spatial = mmf.getId2Spatial();
+
+
 
     SEXP Rres;
     PROTECT( Rres = Rf_allocVector( VECSXP, 3) );
@@ -1109,18 +1116,24 @@ extern "C" {
     double *x2 = REAL(Rx2);
     double lambda = *REAL(Rlambda);
 
+    std::map< std::pair<int, int>, double> plan;
+    double cost;
+    MatrixXi id2spatial;
+#ifdef MOP_USE_CPLEX
     typedef Grid3dMinFlow<double>::TensorXp TensorXp;
     TensorMap<TensorXp> X1(x1, m, n, o);
     TensorMap<TensorXp> X2(x2, m, n, o);
 
     Grid3dMinFlow<double> mmf;
-    std::map< std::pair<int, int>, double> plan = mmf.solve(X1, X2, lambda);
-    
-    
+    plan = mmf.solve(X1, X2, lambda);
+    cost = mmf.getCost();
+    id2spatial = mmf.getId2Spatial();
+#endif
+
     MatrixXd map(plan.size(), 3);
     int mapIndex = 0;
 
-    for( std::map< std::pair<int, int>, double>::iterator it = plan.begin(); 
+    for( std::map< std::pair<int, int>, double>::iterator it = plan.begin();
          it!=plan.end(); ++it ){
 
       const std::pair<int, int> &p = it->first;
@@ -1130,10 +1143,7 @@ extern "C" {
 
       mapIndex++;
     }
-    
-    double cost = mmf.getCost();
-    
-    MatrixXi &id2spatial = mmf.getId2Spatial();
+
 
     SEXP Rres;
     PROTECT( Rres = Rf_allocVector( VECSXP, 3) );

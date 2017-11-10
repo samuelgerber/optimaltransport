@@ -36,8 +36,8 @@ ADD_CUSTOM_TARGET(R_mop
     ${CMAKE_SOURCE_DIR}/lib/CPLEXSolver.h
     ${CMAKE_SOURCE_DIR}/lib/CPLEXNetworkSolver.h
     ${CMAKE_SOURCE_DIR}/lib/LPSolver.h
-    ${CMAKE_SOURCE_DIR}/lib/MatrixMinFLow.h
-    ${CMAKE_SOURCE_DIR}/lib/Grid3dMinFLow.h
+    ${CMAKE_SOURCE_DIR}/lib/MatrixMinFlow.h
+    ${CMAKE_SOURCE_DIR}/lib/Grid3dMinFlow.h
     ${CMAKE_SOURCE_DIR}/lib/mosek.h
     ${CMAKE_SOURCE_DIR}/external/gmra/external/metrics/lib/EigenMetric.h
     ${CMAKE_SOURCE_DIR}/external/gmra/external/metrics/lib/EigenEuclideanMetric.h 

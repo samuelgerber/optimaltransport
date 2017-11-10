@@ -126,9 +126,9 @@ class GLPKSolver : public LPSolver{
     typedef LPSolver::Status Status;
     glp_prob *lp;
 
-    
+
   public:
- 
+
     GLPKSolver(){
       lp = NULL;
     };
@@ -144,7 +144,7 @@ class GLPKSolver : public LPSolver{
    };
 
    virtual void solveLP(){
-      deleteLP()p;
+      deleteLP();
       glp_smcp parm;
       glp_init_smcp(&parm);
       int ret = glp_simplex(lp, &parm);
@@ -165,7 +165,7 @@ class GLPKSolver : public LPSolver{
    virtual void addRows(int n){
       glp_add_rows(lp, n);
    };
-   
+
    virtual double getRowDual(int row){
      return glp_get_row_dual(lp, row+1);
    };
@@ -173,33 +173,37 @@ class GLPKSolver : public LPSolver{
    virtual double getColPrimal(int col){
      return glp_get_col_prim(lp, col+1);
    };
-   
+
    virtual void setRowBounds(int i, double mass){
-     glp_set_row_bnds(lp, i+1, GLP_FX, mass, mass); 
+     glp_set_row_bnds(lp, i+1, GLP_FX, mass, mass);
    };
 
    virtual double getRowBounds(int i){
-     return glp_get_row_ub(lp, i+1); 
+     return glp_get_row_ub(lp, i+1);
+   };
+
+   virtual void setColBounds(int i, double lb, double ub){
+     glp_set_col_bnds(lp, i+1, GLP_DB, lb, ub);
    };
 
    virtual void setColBounds(int i){
      glp_set_col_bnds(lp, i+1, GLP_LO, 0, 0);
    };
-   
+
    virtual void setCoefficent(int i, double cost){
      glp_set_obj_coef(lp, i+1, cost);
    };
-   
+
    virtual void setColConstraints(int col, int s, int t){
      int ind[3] = {0,s+1,t+1};
      double val[3] = {1,1,-1};
-     glp_set_mat_col(lp, col+1, 2, ind, val); 
+     glp_set_mat_col(lp, col+1, 2, ind, val);
    };
 
    virtual int getColConstraints(int col, int *ind, double *val){
      int i[3];
      double v[3];
-     int n = glp_get_mat_col(lp, col+1, i, v); 
+     int n = glp_get_mat_col(lp, col+1, i, v);
      ind[0] = i[1]-1;
      ind[1] = i[2]-1;
      val[0] = v[1];
@@ -207,22 +211,22 @@ class GLPKSolver : public LPSolver{
      return n;
 
    };
-   
+
    virtual Status getColStatus(int col){
      int s = glp_get_col_stat(lp, col+1);
      return convertFromGPLK(s);
    };
-   
+
    virtual Status getRowStatus(int row){
      int s = glp_get_row_stat(lp, row+1);
      return convertFromGPLK(s);
    };
-   
+
    virtual void setColStatus(int col, Status s){
      int st = convertToGPLK(s);
      glp_set_col_stat(lp, col+1, st);
    };
-   
+
    virtual void setRowStatus(int row, Status s){
      int st = convertToGPLK(s);
      glp_set_row_stat(lp, row+1, st);
@@ -246,11 +250,14 @@ class GLPKSolver : public LPSolver{
    virtual int getNumCols(){
      return glp_get_num_cols(lp);
    };
-   
+
    virtual void setupStdBasis(){
      glp_std_basis(lp);
    };
 
+   virtual bool isOptimal(){
+     return glp_get_status(lp) == GLP_OPT;
+   };
 
 
   private:
@@ -269,7 +276,7 @@ class GLPKSolver : public LPSolver{
          return LPSolver::FREE;
 
      }
-     return LPSolver::END; 
+     return LPSolver::END;
    };
 
 
