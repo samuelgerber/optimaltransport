@@ -691,6 +691,7 @@ class TransportPlanSolutions{
         delete *it;
       }
       alternatives.clear();
+
     }; 
 
 
@@ -878,6 +879,9 @@ class MultiscaleTransport{
 
         TransportPlanSolutions<TPrecision> *sol = solveLP(A, B, prevSol, p, lastScale);
         solutions.push_back( sol->getPrimarySolution() );
+        if( prevSol != NULL){
+          delete prevSol;
+        }
         prevSol = sol;
        
 

@@ -125,11 +125,6 @@ int main(int argc, char **argv){
   t2->addPoints(pts2);
 
 
-  IPCAGWT<Precision> gwt1;
-  gwt1.setTree(t1);
-
-  IPCAGWT<Precision> gwt2;
-  gwt2.setTree(t2);
 
   EuclideanMetric<Precision> *metric = new EuclideanMetric<Precision>();
   NodeDistance<Precision> *d = new CenterNodeDistance<Precision>( metric);
@@ -170,7 +165,7 @@ int main(int argc, char **argv){
   ExpandNeighborhoodStrategy<double> expand(2, 0, 1);
   RefineNeighborhoodStrategy<double> refine(2, 0, 1);
   PotentialNeighborhoodStrategy<double> potential(0, 0, false, false);
-  transport.addNeighborhodStrategy(&expand);
+  //transport.addNeighborhodStrategy(&expand);
 
   NeighborhoodPropagationStrategy<double> prop1(0);
   transport.setPropagationStrategy1( &prop1);
@@ -197,14 +192,44 @@ int main(int argc, char **argv){
     delete t2Levels[i];
   }
 
+
   t1Levels.clear();
   t2Levels.clear();
+
+  for(int i=0; i<sols.size(); i++){
+    delete sols[i];
+  }
+  sols.clear();
+  sols = transport.solve( t1Levels,
+      t2Levels, p, nScales1, nScales2);
+
+ for(unsigned int i=0; i < t1Levels.size(); ++i){
+    delete t1Levels[i];
+  }
+  
+  for(unsigned int i=0; i < t2Levels.size(); ++i){
+    delete t2Levels[i];
+  }
+
+
+  t1Levels.clear();
+  t2Levels.clear();
+
+  for(int i=0; i<sols.size(); i++){
+    delete sols[i];
+  }
+  sols.clear();
+
 
   delete d;
   delete metric;
   delete nh1;
   delete nh2;
-  delete lpSolver;
+  delete t1;
+  delete t2;
+  delete factory1;
+  delete factory2;
+  //delete lpSolver;
 
   return 0;
 

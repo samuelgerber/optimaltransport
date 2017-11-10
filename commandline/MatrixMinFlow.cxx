@@ -31,10 +31,10 @@ int main(int argc, char **argv){
   Eigen::MatrixXd S = EigenLinalg::LinalgIO<Precision>::readMatrix(sArg.getValue());
   Eigen::MatrixXd T = EigenLinalg::LinalgIO<Precision>::readMatrix(tArg.getValue());
  
-   
+  Eigen::MatrixXd W = Eigen::MatrixXd::Zero(S.rows(), S.cols() ); 
   MatrixMinFlow<Precision> mmf;
 
-  std::map< std::pair<int, int>, Precision> plan = mmf.solve(S, T);
+  std::map< std::pair<int, int>, Precision> plan = mmf.solve(S, T, W);
  
  
   return 0;

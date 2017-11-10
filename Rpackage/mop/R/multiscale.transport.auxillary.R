@@ -13,9 +13,6 @@ multiscale.transport.interpolate <- function(mst, index, t){
 }
 
 
-
-
-
 sample.from.array <- function(A, unit.dim = F){
   dims = dim(A)
   d = length(dims)

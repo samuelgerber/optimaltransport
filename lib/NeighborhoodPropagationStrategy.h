@@ -76,8 +76,11 @@ class NeighborhoodPropagationStrategy : public PropagationStrategy<TPrecision>{
       TransportLPSolver<TPrecision>::createLP(sol, solver); 
       clock_t t2 = clock(); 
       solver->solveLP(); 
-      clock_t t3 = clock(); 
-      this->ballNeighborhood(sol, pSol->getCombinedPaths(), expansionFactor, p, solver, true);
+      clock_t t3 = clock();
+      TransportPlan<TPrecision> *tmpSols = pSol->getCombinedPaths(); 
+      this->ballNeighborhood(sol, tmpSols, expansionFactor, p, solver, true);
+      delete tmpSols;
+
       clock_t t4 = clock(); 
       solver->solveLP(); 
       clock_t t5 = clock(); 

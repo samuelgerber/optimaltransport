@@ -238,6 +238,7 @@ extern "C" {
       TransportPlan<double> *s = sols[i];
       cost(i) = s->cost;
       vars(i) = s->getNumberOfPaths();
+      
     }
 
     int nVars = 17;
@@ -950,7 +951,10 @@ extern "C" {
 
 
     SEXP res = multiscaleTransport(nh1, nh2, m1, m2, p, s1, s2, weights1,
-        weights2, *transport, matchScale, multiscaleCost, multiscaleSolution); 
+        weights2, *transport, matchScale, multiscaleCost, multiscaleSolution);
+
+    delete nh1;
+    delete nh2; 
 
     return res;
 
