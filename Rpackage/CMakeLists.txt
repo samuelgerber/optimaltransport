@@ -7,6 +7,38 @@ PROJECT(R)
 
 
 ############## multiscale optimal transport package ##############
+#IF( USE_CPLEX )
+#  IF( USE_MOSEK )
+#    IF( USE_GLPK )
+#      COMMAND cp ${R_SOURCE_DIR}/mop/MakevarsALL ./mop/src/Makevars
+#      COMMAND cp ${R_SOURCE_DIR}/mop/mop_config_ALL.h ./mop/src/mop_config.h
+#    ELSE( USE_GLPK )
+#      COMMAND cp ${R_SOURCE_DIR}/mop/MakevarsMOSEK_CPLEX ./mop/src/Makevars
+#      COMMAND cp ${R_SOURCE_DIR}/mop/mop_config_MOSEK_CPLEX.h ./mop/src/mop_config.h
+#    ENDIF( USE_GLPK )
+#  ELSEIF( USE_GLPK )
+#    COMMAND cp ${R_SOURCE_DIR}/mop/MakevarsGLPK_CPLEX ./mop/src/Makevars
+#    COMMAND cp ${R_SOURCE_DIR}/mop/mop_config_GLPK_CPLEX.h ./mop/src/mop_config.h
+#  ELSE( USE_MOSEK )
+#    COMMAND cp ${R_SOURCE_DIR}/mop/MakevarsCPLEX ./mop/src/Makevars
+#    COMMAND cp ${R_SOURCE_DIR}/mop/mop_config_CPLEX.h ./mop/src/mop_config.h
+#  ENDIF( USE_MOSEK )
+#ELSEIF( USE_CPLEX )
+#  IF( USE_MOSEK )
+#    IF( USE_GLPK )
+#      COMMAND cp ${R_SOURCE_DIR}/mop/MakevarsMOSEK_GLPK ./mop/src/Makevars
+#      COMMAND cp ${R_SOURCE_DIR}/mop/mop_config_MOSEK_GLPK.h ./mop/src/mop_config.h
+#    ELSE( USE_GLPK )
+#      COMMAND cp ${R_SOURCE_DIR}/mop/MakevarsMOSEK ./mop/src/Makevars
+#      COMMAND cp ${R_SOURCE_DIR}/mop/mop_config_MOSEK.h ./mop/src/mop_config.h
+#    ENDIF( USE_GLPK )
+#  ELSE( USE_MOSEK )
+#    COMMAND cp ${R_SOURCE_DIR}/mop/MakevarsGLPK ./mop/src/Makevars
+#    COMMAND cp ${R_SOURCE_DIR}/mop/mop_config_GLPK.h ./mop/src/mop_config.h
+#  ENDIF( USE_MOSEK)
+#ENDIF( USE_CPLEX )
+
+
 
 ADD_CUSTOM_TARGET(R_mop
     COMMAND rsync -aC ${R_SOURCE_DIR}/mop . 
