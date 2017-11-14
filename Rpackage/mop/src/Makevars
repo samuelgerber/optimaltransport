@@ -4,11 +4,11 @@ PKG_CPPFLAGS=-I.
 #PKG_LIBS=${LAPACK_LIBS} $(BLAS_LIBS) $(FLIBS) -lilocplex -lcplex -lconcert -lmosek64 -lglpk -L /ytmp/sgerber/local/lib #-L/paths to your optimization libraries if not ins standard directory 
 
 #Setup for cplex
-#PKG_LIBS= -lilocplex -lcplex -lconcert  
+PKG_LIBS= -lilocplex -lcplex -lconcert  
 
 #Setup for MOSEK
 #PKG_LIBS=${LAPACK_LIBS} $(BLAS_LIBS) $(FLIBS) -lmosek -L/path to optmization library if not instandard directory 
 
 
 #Setup for GLPK
-PKG_LIBS=${LAPACK_LIBS} $(BLAS_LIBS) $(FLIBS) -lglpk #-L/path to optimization library if not ins standard directory 
+#PKG_LIBS=${LAPACK_LIBS} $(BLAS_LIBS) $(FLIBS) -lglpk #-L/path to optimization library if not ins standard directory 

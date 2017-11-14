@@ -34,13 +34,13 @@
 
 #include "TransportLP.h"
 
+#include "mop_config.h"
 
 #ifdef MOP_USE_CPLEX
 #include "MatrixMinFlow.h"
 #include "Grid3dMinFlow.h"
 #endif
 
-#include "mop_config.h"
 
 #ifdef MOP_USE_GLPK
 #include "GLPKSolver.h"
