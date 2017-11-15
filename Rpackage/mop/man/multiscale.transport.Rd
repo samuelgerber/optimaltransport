@@ -28,7 +28,7 @@ multiscale.transport.solve(gmra1,  gmra2, scale1=-1, scale2=-1 , p=1,
 
 
 
-multiscale.transport.create.lp( oType=26, lambda=-1)
+multiscale.transport.create.lp( oType=31, lambda=-1)
 multiscale.transport.setup.default()
 multiscale.transport.add.expand.neighborhood.strategy(trp, expandFactor,
     tolerance, iterations=1, maxAdd=10000000)
@@ -90,7 +90,9 @@ multiscale.transport.create.sinkhorn.propagation.strategy(lambda, tolerance,
     23: CPLEX Dual,
     24: CPLEX Primal,
     25: CPLEX Sifting,
-    26: CPLEX Network
+    26: CPLEX Network,
+    31: Lemon Network Simplex
+    Default is lemon
   }
   \item{propFactor}{Neighborhood size (ball = propFactor * node radius) to
     consider when propating solution from one scale to the next. 0 selects

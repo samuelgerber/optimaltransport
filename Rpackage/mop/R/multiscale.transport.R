@@ -97,7 +97,7 @@ multiscale.transport.solve <- function(trp, gmra1, gmra2, scale1=-1, scale2=-1,
 
 ### setup routines
 
-multiscale.transport.setup.default <- function(lambda=0, oType=26, nIter=1){
+multiscale.transport.setup.default <- function(lambda=0, oType=31, nIter=1){
    trp <- multiscale.transport.create.lp(oType=oType, lambda=lambda)
    prop <- multiscale.transport.create.iterated.capacity.propagation.strategy(nIter, 0);
    multiscale.transport.set.propagation.strategy.1(trp, prop);
@@ -107,7 +107,7 @@ multiscale.transport.setup.default <- function(lambda=0, oType=26, nIter=1){
 }
 
 
-multiscale.transport.create.lp <- function(oType=26, lambda=-1){
+multiscale.transport.create.lp <- function(oType=31, lambda=-1){
   res <- .Call("createTransportLP", as.integer(oType), as.double(lambda) );
   res
 }

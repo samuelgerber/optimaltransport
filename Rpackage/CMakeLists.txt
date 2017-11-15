@@ -43,6 +43,7 @@ PROJECT(R)
 ADD_CUSTOM_TARGET(R_mop
     COMMAND rsync -aC ${R_SOURCE_DIR}/mop . 
     COMMAND rsync -aC ${CMAKE_SOURCE_DIR}/external/gmra/lib/ ./mop/src 
+    COMMAND rsync -aC ${CMAKE_SOURCE_DIR}/lemon/ ./mop/src/lemon 
     COMMAND rsync -aC ${R_SOURCE_DIR}/Eigen/ ./mop/src/Eigen 
     COMMAND rsync -aC ${R_SOURCE_DIR}/unsupported/ ./mop/src/unsupported 
     COMMAND cp 
@@ -64,6 +65,7 @@ ADD_CUSTOM_TARGET(R_mop
     ${CMAKE_SOURCE_DIR}/lib/TransportLP.h
     ${CMAKE_SOURCE_DIR}/lib/TransportLPSolver.h
     ${CMAKE_SOURCE_DIR}/lib/GLPKSolver.h
+    ${CMAKE_SOURCE_DIR}/lib/LemonSolver.h
     ${CMAKE_SOURCE_DIR}/lib/MOSEKSolver.h
     ${CMAKE_SOURCE_DIR}/lib/CPLEXSolver.h
     ${CMAKE_SOURCE_DIR}/lib/CPLEXNetworkSolver.h

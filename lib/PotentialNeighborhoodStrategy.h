@@ -8,7 +8,7 @@
 template <typename TPrecision>
 class ReducedCostPath{
   public:
-    typedef typename TransportPlan<TPrecision>::Path Path; 
+    typedef typename TransportPlan<TPrecision>::Path Path;
 
     Path path;
     TPrecision reducedCost;
@@ -17,7 +17,7 @@ class ReducedCostPath{
       reducedCost(rc){
     };
 
-  
+
     bool operator == (const ReducedCostPath& other) const{
       return this->reducedCost == other.reducedCost;
     };
@@ -29,7 +29,7 @@ class ReducedCostPath{
     bool operator > (const ReducedCostPath& other) const{
       return this->reducedCost > other.reducedCost;
     };
-  
+
 
 };
 
@@ -45,16 +45,16 @@ class PotentialNeighborhoodStrategy : public NeighborhoodStrategy<TPrecision> {
     typedef typename TransportNodeVector::iterator TransportNodeVectorIterator;
     typedef typename TransportNodeVector::const_iterator TransportNodeVectorCIterator;
 
-    typedef typename TransportPlan<TPrecision>::Path Path; 
+    typedef typename TransportPlan<TPrecision>::Path Path;
 
     typedef LPSolver::Status Status;
 
 
   private:
-    
+
     typedef typename std::list< ReducedCostPath<TPrecision> > RCList;
     typedef typename RCList::iterator RCListIterator;
-    
+
     TPrecision reducedCostThresholdFactor;
     TPrecision expansionTolerance;
     bool sortReducedCost;
@@ -71,7 +71,7 @@ class PotentialNeighborhoodStrategy : public NeighborhoodStrategy<TPrecision> {
         bool sort=false, bool expand=false,  int nIters=1, int nAdd=1000000) :
       reducedCostThresholdFactor(threshold), expansionTolerance(eTolerance),
       sortReducedCost(sort), expandPotential(expand),
-      nRefinementIterations(nIters), nExpansionAdd(nAdd){ 
+      nRefinementIterations(nIters), nExpansionAdd(nAdd){
     };
 
 
@@ -83,7 +83,7 @@ class PotentialNeighborhoodStrategy : public NeighborhoodStrategy<TPrecision> {
 
     TransportPlan<TPrecision> *solveNeighborhoodLP(MultiscaleTransportLevel<TPrecision> *source,
         MultiscaleTransportLevel<TPrecision> *target, TransportPlan<TPrecision>
-        *sol, TransportPlan<TPrecision> *nhood, LPSolver *solver, TPrecision p){ 
+        *sol, TransportPlan<TPrecision> *nhood, LPSolver *solver, TPrecision p){
 
 
 
@@ -92,8 +92,8 @@ class PotentialNeighborhoodStrategy : public NeighborhoodStrategy<TPrecision> {
       for(int nIter =nRefinementIterations; nIter !=0; --nIter){
         std::cout << std::endl << "---- Potential strategy ----" << std::endl;
 
-        clock_t t1 = clock(); 
-        
+        clock_t t1 = clock();
+
         MultiscaleTransportLevel<TPrecision> *rootS = source->getRootLevel();
         MultiscaleTransportLevel<TPrecision> *rootT = target->getRootLevel();
 
@@ -113,7 +113,7 @@ class PotentialNeighborhoodStrategy : public NeighborhoodStrategy<TPrecision> {
 
         //propagate bounds to top of target transport hierarchy
         for(TransportNodeVectorIterator tIt = targetRootNodes.begin(); tIt
-            != targetRootNodes.end(); ++tIt){ 
+            != targetRootNodes.end(); ++tIt){
           potentialBounds( *tIt, rootT->getScale(), tScale );
         }
 
@@ -165,7 +165,7 @@ class PotentialNeighborhoodStrategy : public NeighborhoodStrategy<TPrecision> {
             TPrecision rc = d-delta;
 
             if( rc <= reducedCostThresholdFactor * pow(cost,p) ){
-              if(s == tScale){              
+              if(s == tScale){
                 Path path(nFrom, nTo);
                 path.cost = pow(cost, p);
                 rcArcs.push_back( ReducedCostPath<TPrecision>(path, rc) );
@@ -188,7 +188,7 @@ class PotentialNeighborhoodStrategy : public NeighborhoodStrategy<TPrecision> {
 
         //int cutoff = rcArcs.size(); //nExpansionAdd;
 
-        //if(sortReducedCost){ 
+        //if(sortReducedCost){
         //  rcArcs.sort();
         //}
 
@@ -218,7 +218,7 @@ class PotentialNeighborhoodStrategy : public NeighborhoodStrategy<TPrecision> {
               newSol->addPath( path );
               colStatus.push_back( LPSolver::BASIC );
             }
-            else{ 
+            else{
               colStatus[ index ] = LPSolver::BASIC;
             }
           }
@@ -228,9 +228,6 @@ class PotentialNeighborhoodStrategy : public NeighborhoodStrategy<TPrecision> {
               colStatus.push_back( LPSolver::LOWER );
             }
           }
-
-
-
         }
 
 
@@ -242,8 +239,8 @@ class PotentialNeighborhoodStrategy : public NeighborhoodStrategy<TPrecision> {
 
 
         //setup new problem
-        newSol->timeRefine = sol->timeRefine; 
-        newSol->timePropagate = sol->timePropagate; 
+        newSol->timeRefine = sol->timeRefine;
+        newSol->timePropagate = sol->timePropagate;
         newSol->timeSolve = sol->timeSolve;
 
         delete sol;
@@ -255,7 +252,7 @@ class PotentialNeighborhoodStrategy : public NeighborhoodStrategy<TPrecision> {
           std::endl;
 
 
-        TransportLPSolver<TPrecision>::createLP(sol, solver); 
+        TransportLPSolver<TPrecision>::createLP(sol, solver);
         TransportLPSolver<TPrecision>::setupBasis(solver, colStatus, rowStatus);
 
         std::cout << "ncols: " << solver->getNumCols() << std::endl;

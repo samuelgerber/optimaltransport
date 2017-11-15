@@ -1,7 +1,8 @@
-This package depends on linear programming libraries. Currently it supports GLPK,
-CPLEX and MOSEK. CPLEX is typically the fastest.
+This package depends on linear programming libraries. Currently it supports Lemon network simplex, GLPK,
+CPLEX and MOSEK. Lemon and CPLEX network simplex are typically the fastest.
 
-To setup the package for a specific library edit src/Makevars and
-src/mop_config.h
+The default setup si lemon and is contained within the package. For using
+another library edit src/Makevars and src/mop_config.h
 
-To install the package requires that all the libraries you are using are on R's linker path.
+To install the package requires that all the libraries you are using are on R's
+linker path.

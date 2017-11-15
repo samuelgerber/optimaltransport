@@ -45,7 +45,9 @@ namespace lemon {
   /// ln(10)
   const long double LN10    = 2.3025850929940456840179914546843642L;
   /// pi
+#ifndef PI
   const long double PI      = 3.1415926535897932384626433832795029L;
+#endif
   /// pi/2
   const long double PI_2    = 1.5707963267948966192313216916397514L;
   /// pi/4

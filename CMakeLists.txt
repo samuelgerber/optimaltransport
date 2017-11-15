@@ -4,34 +4,17 @@ IF(COMMAND CMAKE_POLICY)
 ENDIF(COMMAND CMAKE_POLICY)
 
 PROJECT(OptimalTransport)
-
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/")
 find_package(Eigen3 REQUIRED)
-find_package(CPLEX REQUIRED)
 
-#FIND_PATH(LEMON_SOURCE_ROOT_DIR CMakeLists.txt
-#  PATHS ${CMAKE_SOURCE_DIR}/lemon ${CMAKE_SOURCE_DIR}/deps/lemon 
-#  NO_DEFAULT_PATH
-#  DOC "Location of LEMON source as a CMAKE subproject")
-  
-#IF(EXISTS ${LEMON_SOURCE_ROOT_DIR})
-#    ADD_SUBDIRECTORY(${LEMON_SOURCE_ROOT_DIR} deps/lemon)
-#    SET(LEMON_INCLUDE_DIRS
-#      ${LEMON_SOURCE_ROOT_DIR}
-#      ${CMAKE_BINARY_DIR}/deps/lemon
-#    )
-#    SET(LEMON_LIBRARIES lemon)
-#    UNSET(LEMON_ROOT_DIR CACHE)
-#    UNSET(LEMON_DIR CACHE)
-#    UNSET(LEMON_INCLUDE_DIR CACHE)
-#    UNSET(LEMON_LIBRARY CACHE)
-#ELSE()
-#    FIND_PACKAGE(LEMON QUIET NO_MODULE)
-#    FIND_PACKAGE(LEMON REQUIRED)
-#ENDIF()
+option( USE_CPLEX "CPLEX library available" ) 
 
+if( USE_CEPLEX )
+  find_package(CPLEX REQUIRED)
+endif( USE_CPLEX )
 
-INCLUDE_DIRECTORIES( lib
+INCLUDE_DIRECTORIES( .
+                     lib
                      external/gmra/lib
                      external/gmra/external/utils/lib
                      external/gmra/external/kmeans/lib

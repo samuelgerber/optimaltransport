@@ -18,6 +18,8 @@
 #include "RelativeGMRANeighborhood.h"
 
 #include "LPSolver.h"
+#include "LemonSolver.h"
+
 #include "MultiscaleTransportLP.h"
 #include "ExpandNeighborhoodStrategy.h"
 #include "RefineNeighborhoodStrategy.h"
@@ -101,14 +103,15 @@ extern "C" {
     CPLEX_NETWORK       = 26,
     CPLEX_NETWORK_2     = 27,
     CPLEX_CONCURRENT    = 28,
-    CPLEX               = 30
+    CPLEX               = 30,
+    Lemon               = 31
   };
 
 
 
   LPSolver *createSolver(Optimizer optimType, double lambda){
 
-    LPSolver *solver;
+    LPSolver *solver = NULL;
     if(optimType < GLPK){
       if(lambda > 0){
         Rprintf("Fuzzy match not supported in this optimizer\n");
@@ -117,7 +120,7 @@ extern "C" {
       solver = new GLPKSolver();
 #else
       Rprintf("GLPK not supported in this installation\n");
-      return NULL;
+      //return NULL;
 #endif
     }
     else if( optimType < MSK){
@@ -148,7 +151,7 @@ extern "C" {
       solver = new MOSEKSolver(optimizer);
 #else
       Rprintf("MOSEK not supported in this installation\n");
-      return NULL;
+      //return NULL;
 #endif
     }
     else if(optimType == CPLEX_NETWORK){
@@ -156,7 +159,7 @@ extern "C" {
       solver = new CPLEXNetworkSolver(lambda);
 #else
       Rprintf("CPLEX not supported in this installation\n");
-      return NULL;
+      //return NULL;
 #endif
     }
     else{
@@ -199,10 +202,13 @@ extern "C" {
       solver = new CPLEXSolver(optimizer, lambda);
 #else
       Rprintf("CPLEX not supported in this installation\n");
-      return NULL;
+      //return NULL;
 #endif
     }
 
+    if( solver == NULL){
+      solver =  new LemonSolver(lambda);
+    };
 
     return solver;
   }

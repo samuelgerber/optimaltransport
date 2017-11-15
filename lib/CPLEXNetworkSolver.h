@@ -153,7 +153,7 @@ class CPLEXNetworkSolver : public LPSolver{
 
      iCount = CPXNETgetitcnt( env, prob);
 
-     CPXNETgetbase( env, prob, colStatus.data(), rowStatus.data());
+     CPXNETgetbase( env, prob, colStatus.data(), rowStatus.data() );
 
     /*
      for(int i=0; i<colStatus.size(); i++){
@@ -163,7 +163,7 @@ class CPLEXNetworkSolver : public LPSolver{
      std::cout << std::endl;
      */
 
-     CPXNETfreeprob(env, &prob);
+     CPXNETfreeprob( env, &prob );
 
      //std::cout << "Obj: " << objValue << std::endl;
      //std::cout << "#iter: " << iCount << std::endl << std::endl;

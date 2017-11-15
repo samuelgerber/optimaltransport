@@ -9,16 +9,16 @@
 template <typename TPrecision>
 class TransportLPSolver {
 
-  
+
   public:
-    
+
     typedef typename TransportNode<TPrecision>::TransportNodeVector TransportNodeVector;
     typedef typename TransportNodeVector::iterator TransportNodeVectorIterator;
     typedef typename TransportNodeVector::const_iterator TransportNodeVectorCIterator;
-    typedef typename TransportPlan<TPrecision>::Path Path; 
+    typedef typename TransportPlan<TPrecision>::Path Path;
     typedef LPSolver::Status Status;
 
-   
+
     static void createLP(TransportPlan<TPrecision> *sol, LPSolver *solver){
       int ns = sol->source->getNodes().size();
       int nt = sol->target->getNodes().size();
@@ -33,7 +33,7 @@ class TransportLPSolver {
       int nConstraints = ns + nt;
 
       solver->addRows( nConstraints );
-      
+
       //columns - coefficents for each combination of nodes from tree1 to
       //tree2 = M*N
       solver->addCols( sol->getNumberOfPaths() );
@@ -41,7 +41,7 @@ class TransportLPSolver {
       //set constraints bounds
       //The weights of each node in tree1
       for(TransportNodeVectorCIterator it = sol->source->getNodes().begin(); it !=
-          sol->source->getNodes().end(); ++it){ 
+          sol->source->getNodes().end(); ++it){
         TransportNode<TPrecision> *n = *it;
         double w = n->getMass();
         solver->setRowBounds(n->getID(), w);
@@ -61,7 +61,7 @@ class TransportLPSolver {
 
       //Setup constraint matrix based on the following set of constraints:
       //1. the sum of the N weights leaving from A has to equal the weight in the
-      //receiver in B 
+      //receiver in B
       //2. the sum of the M weights ending up in node i of tree2 has to equal the
       //weight of node i in tree2
       //The constraint bounds above are the receiving and sending amount of
@@ -75,14 +75,14 @@ class TransportLPSolver {
         TransportNode<TPrecision> *to = path.to;
         solver->setColBounds(path.index);
         solver->setCoefficent(path.index, path.cost );
-        solver->setColConstraints(path.index, from->getID(), offset + to->getID() ); 
+        solver->setColConstraints(path.index, from->getID(), offset + to->getID() );
 
       }
 
    }
 
 
-   
+
 
    static void storeLP(TransportPlan<TPrecision> *sol, LPSolver *solver, TPrecision p){
      sol->cost = pow( solver->getObjectiveValue(), 1.0/p );
@@ -98,11 +98,10 @@ class TransportLPSolver {
        path.w = solver->getColPrimal(path.index);
        sumw += path.w;
        nNonZero += (path.w > 0);
-     } 
-     
-     std::cout << "nonzeros: " << nNonZero << std::endl;
-     std::cout << "solution sumw: " << sumw << std::endl << std::endl;
+     }
 
+     std::cout << "nonzeros: "      << nNonZero << std::endl;
+     std::cout << "solution sumw: " << sumw     << std::endl << std::endl;
 
 
      //Potential of from nodes
@@ -149,7 +148,7 @@ class TransportLPSolver {
         TPrecision pi = solver->getRowDual( offset + node->getID() );
         node->setPotential(pi);
         node->resetPi(pi, pi);
-      }   
+      }
 
     };
 
@@ -159,15 +158,15 @@ class TransportLPSolver {
     static void setupBasis(LPSolver *solver, std::vector<Status> &colStatus,
         std::vector<Status> &rowStatus){
 
-      int nBasic = 0;
+      //int nBasic = 0;
       for(int i=0; i<colStatus.size(); i++){
         solver->setColStatus(i, colStatus[i]);
-        nBasic += colStatus[i] == LPSolver::BASIC;
+        //nBasic += colStatus[i] == LPSolver::BASIC;
       }
 
       for(int i=0; i<rowStatus.size(); i++){
         solver->setRowStatus(i, rowStatus[i]);
-        nBasic += rowStatus[i] == LPSolver::BASIC;
+        //nBasic += rowStatus[i] == LPSolver::BASIC;
       }
 
      // std::cout << "#basic: " << nBasic << std::endl;

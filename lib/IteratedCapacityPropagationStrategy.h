@@ -19,7 +19,7 @@ class IteratedCapacityPropagationStrategy : public NeighborhoodPropagationStrate
     typedef typename TransportNodeVector::iterator TransportNodeVectorIterator;
     typedef typename TransportNodeVector::const_iterator TransportNodeVectorCIterator;
 
-    typedef typename TransportPlan<TPrecision>::Path Path; 
+    typedef typename TransportPlan<TPrecision>::Path Path;
 
 
   private:
@@ -28,7 +28,7 @@ class IteratedCapacityPropagationStrategy : public NeighborhoodPropagationStrate
   public:
 
     IteratedCapacityPropagationStrategy(int nIter, TPrecision eFactor=0) :
-      NeighborhoodPropagationStrategy<TPrecision>(eFactor), nIterations(nIter){ 
+      NeighborhoodPropagationStrategy<TPrecision>(eFactor), nIterations(nIter){
     };
 
     virtual ~IteratedCapacityPropagationStrategy(){};
@@ -42,7 +42,7 @@ class IteratedCapacityPropagationStrategy : public NeighborhoodPropagationStrate
                         TransportPlanSolutions<TPrecision> *pSol, double p, bool lastScale ){
 
       TransportPlan<TPrecision> *sol = pSol->getPrimarySolution();
-    
+
       TransportPlan<TPrecision> *res = sol->createCopy();
       TransportLPSolver<TPrecision>::createLP(res, solver);
 
@@ -50,7 +50,7 @@ class IteratedCapacityPropagationStrategy : public NeighborhoodPropagationStrate
         clock_t t1 = clock();
         for( res->pathIteratorBegin(); !res->pathIteratorIsAtEnd();
           res->pathIteratorNext() ){
-          Path &path = res->pathIteratorCurrent();            
+          Path &path = res->pathIteratorCurrent();
 
           if(path.w > 0){
             static Random<TPrecision> random;
@@ -68,23 +68,22 @@ class IteratedCapacityPropagationStrategy : public NeighborhoodPropagationStrate
         clock_t t2 = clock();
         solver->solveLP();
         clock_t t3 = clock();
-        
 
-        TransportLPSolver<TPrecision>::storeLP(res, solver, p);
+
 
         //Fix if unfeasible LP
         if( !solver->isOptimal() ){
           std::cout << "Suboptimal, problem infeasible. Removing some upper bounds" << std::endl;
-      
+/*
           TransportNodeVector &snodes = res->source->getNodes();
           std::vector<double> solSNodeWeights(snodes.size(), 0);
-          
+
           TransportNodeVector &tnodes = res->target->getNodes();
           std::vector<double> solTNodeWeights(tnodes.size(), 0);
 
           for( res->pathIteratorBegin(); !res->pathIteratorIsAtEnd();
                res->pathIteratorNext() ){
-            Path &path = res->pathIteratorCurrent();            
+            Path &path = res->pathIteratorCurrent();
 
             if(path.w > 0){
               int fromID =  path.from->getID();
@@ -93,7 +92,7 @@ class IteratedCapacityPropagationStrategy : public NeighborhoodPropagationStrate
               solTNodeWeights[toID] += path.w;
             }
           }
-          
+
           std::vector<double> reqSNodeWeights(snodes.size(), 0);
           for( TransportNodeVectorCIterator it = snodes.begin(); it != snodes.end();
                 ++it ){
@@ -110,7 +109,7 @@ class IteratedCapacityPropagationStrategy : public NeighborhoodPropagationStrate
           int nBounds = 0;
           for( res->pathIteratorBegin(); !res->pathIteratorIsAtEnd();
                res->pathIteratorNext() ){
-            Path &path = res->pathIteratorCurrent();            
+            Path &path = res->pathIteratorCurrent();
 
             if(path.w > 0){
               int fromID =  path.from->getID();
@@ -123,29 +122,31 @@ class IteratedCapacityPropagationStrategy : public NeighborhoodPropagationStrate
             }
           }
           std::cout << "Removed " << nBounds << " upper bounds" << std::endl;
-          std::cout << "Reolving" << std::endl;
+          std::cout << "Resolving" << std::endl;
           solver->solveLP();
-          TransportLPSolver<TPrecision>::storeLP(res, solver, p);
-        
+
 
 
 
           //reset bounds and recompute solution
-          /*
+          */
            for( res->pathIteratorBegin(); !res->pathIteratorIsAtEnd();
 		      res->pathIteratorNext() ){
-	      Path &path = res->pathIteratorCurrent();            
+	      Path &path = res->pathIteratorCurrent();
 	      solver->setColBounds(path.index);
           }
           solver->solveLP();
-          */
+
           //break;
         }
+
+        TransportLPSolver<TPrecision>::storeLP(res, solver, p);
         pSol->addAlternativeSolution(res);
         res = res->createCopy();
 
       }
-      
+
+      delete res;
 
       //pSol->addAlternativeSolution(res);
 
