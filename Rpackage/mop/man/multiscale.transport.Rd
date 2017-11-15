@@ -166,7 +166,7 @@ gmra2 = gmra.create.ipca(X=X2, eps=0, d=2, maxKids=2)
 
 #setup and solve multiscale lp
 library(mop)
-trp.lp <- multiscale.transport.create.lp(oType=26)
+trp.lp <- multiscale.transport.create.lp(oType=30)
 icprop <- multiscale.transport.create.iterated.capacity.propagation.strategy(1, 0)
 multiscale.transport.set.propagation.strategy.1(trp.lp, icprop);
 

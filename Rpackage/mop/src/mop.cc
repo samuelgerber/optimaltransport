@@ -162,7 +162,7 @@ extern "C" {
       //return NULL;
 #endif
     }
-    else{
+    else if(optimType < CPLEX){
 #ifdef MOP_USE_CPLEX
       //IloCplex::Algorithm optimizer = IloCplex::NoAlg;
       int optimizer = CPLEX_AUTO;
