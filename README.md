@@ -11,7 +11,7 @@ This code is designed for fast multiscale optimal transport but also permits sin
 * Sinkhorn optimal transport approach
 * Multiscale version of sinkhorn transport
 * Rpackage for sinkhorn transport (both multiscale and single scale, depends on gmra R package)
-* Rpackage for optimal transport (both multiscale and single scale, requires any of CPLEX, GPLK or MOSEK, depends on gmra r package )
+* Rpackage for optimal transport (both multiscale and single scale, depends on gmra R package )
 
 ## Requirements
 
@@ -47,7 +47,7 @@ Prepackaged versions are available from
 ### Using other linear programming libraries
 
 The default setup uses lemon for solving linear progragraming. If you would
-like to use another linear programming the pakage supports CPLEX, MOSEK and
+like to use another linear programming the package supports CPLEX, MOSEK and
 GLPK. 
 
 To setup for a a specific library edit src/Makevars and src/mop_config.h in the
