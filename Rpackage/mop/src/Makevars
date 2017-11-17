@@ -1,13 +1,18 @@
 PKG_CPPFLAGS=-I. 
 
+#Default is lemon lp library whihc is included in the package and does not
+#require any libraries. Adjust if you would like to use another library, also
+#adjust mop_config.h accordingly.
+
 # use all libraries
 #PKG_LIBS=${LAPACK_LIBS} $(BLAS_LIBS) $(FLIBS) -lilocplex -lcplex -lconcert -lmosek64 -lglpk  #-L/paths to your optimization libraries if not ins standard directory 
+
 
 #Setup for cplex
 #PKG_LIBS= -lilocplex -lcplex -lconcert  
 
 #Setup for MOSEK
-#PKG_LIBS=${LAPACK_LIBS} $(BLAS_LIBS) $(FLIBS) -lmosek -L/path to optmization library if not instandard directory 
+#PKG_LIBS=${LAPACK_LIBS} $(BLAS_LIBS) $(FLIBS) -lmosek #-L/path to optmization library if not instandard directory 
 
 #Setup for GLPK
 #PKG_LIBS=${LAPACK_LIBS} $(BLAS_LIBS) $(FLIBS) -lglpk #-L/path to optimization library if not ins standard directory 
