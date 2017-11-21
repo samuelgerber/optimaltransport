@@ -174,7 +174,7 @@ time1 <- system.time(
     trp1 <- multiscale.transport.solve(trp.lp, gmra1, gmra2, p = 2, nType=0, dType=1) )
 
 #add nieghborhood expansion
-multiscale.transport.add.expand.neighborhood.strategy(trp.lp, 1 ); 
+multiscale.transport.add.expand.neighborhood.strategy(trp.lp, 1 ) 
 time2 <- system.time( 
     trp2 <- multiscale.transport.solve(trp.lp, gmra1, gmra2, p = 2, nType=0, dType=1) )
 
@@ -188,5 +188,6 @@ trp3$cost
 time1
 time2
 time3
+
 }
 \keyword{multiscale,gmra,neighbor}

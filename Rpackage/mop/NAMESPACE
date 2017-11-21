@@ -30,6 +30,7 @@ export(
   "multiscale.transport.decompose",
   "multiscale.transport.decompose2",
   "multiscale.transport.vector.decomposition",
+  "multiscale.transport.subtract.diagonal",
   "sample.from.array",
   "sample.to.array"
 )

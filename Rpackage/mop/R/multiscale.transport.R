@@ -95,6 +95,8 @@ multiscale.transport.solve <- function(trp, gmra1, gmra2, scale1=-1, scale2=-1,
 
 
 
+
+
 ### setup routines
 
 multiscale.transport.setup.default <- function(lambda=0, oType=31, nIter=1){
@@ -183,4 +185,56 @@ multiscale.transport.create.sinkhorn.propagation.strategy <- function(lambda,
     tolerance, threshold, iterations=100){
   .Call("createSinkhornPropagationStrategy", as.double(lambda),
       as.double(tolerance), as.double(threshold), as.integer(iterations) )
+}
+
+
+# Add diagonal for persistence diagram distance
+
+multiscale.transport.subtract.diagonal <- function(trp, p=2){
+  
+  n <- length(trp$cost)
+  
+  from  <- trp$from[[n]]
+  to    <- trp$to[[n]]
+  map   <- trp$map[[n]]
+
+  delta <- to[map[,2], ] - from[map[,1], ]
+  costs <- rowSums( abs(delta)^p )
+
+  dtmp <- sqrt( rowSums(  (from * 1/sqrt( ncol(from)) )^2 ) ) / sqrt( ncol(from) )
+  from.diag <- rowSums( abs( sweep(from, 1, dtmp, "-" )  )^p )
+  
+  dtmp <- sqrt( rowSums(  (to * 1/sqrt( ncol(to)) )^2 )  ) / sqrt( ncol(to) )
+  to.diag <- rowSums( abs( sweep(to, 1, dtmp, "-" )  )^p )
+  
+  from.mass <- trp$fromMass[[n]]
+  to.mass <- trp$toMass[[n]]
+
+  from.mass <- from.mass[ map[,1] ] 
+  to.mass <- to.mass[ map[,2] ] 
+
+  from.cost <- from.diag[ map[,1] ]
+  to.cost <- to.diag[ map[,2] ]
+
+  delta.cost <- from.cost - to.cost
+
+  from.index <- which(delta.cost > 0 )
+  from.mass[ from.index ] = pmax( from.mass[ from.index ] - to.mass[ from.index], 0 )
+  
+  to.index <- which(delta.cost <= 0 )
+  to.mass[ to.index ] = pmax( to.mass[ to.index ] - from.mass[ to.index], 0 )
+
+  from.index = which( costs > from.cost )
+  map[from.index,3 ] = map[from.index, 3] - from.mass[from.index]
+  
+  from.index = which( costs <= from.cost )
+  from.mass[from.index] = 0
+
+  to.index = which( costs > to.cost )
+  map[to.index,3 ] = map[to.index, 3] - to.mass[to.index]
+
+  to.index = which( costs <= to.cost )
+  to.mass[to.index] = 0
+
+  sum(from.mass * from.cost + to.mass*to.cost + costs*map[,3])^(1/p)
 }
