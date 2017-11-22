@@ -40,7 +40,7 @@ The package can be installed with
 
 * make R_mop_install (after running cmake)
 
-Prepackaged versions are available from
+Prepackaged versions are available from (but might not be the latest versions):
 
 * https://bitbucket.org/suppechasper/optimaltransport/downloads/
 
