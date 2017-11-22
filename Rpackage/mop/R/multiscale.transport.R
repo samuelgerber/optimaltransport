@@ -188,10 +188,47 @@ multiscale.transport.create.sinkhorn.propagation.strategy <- function(lambda,
 }
 
 
-# Add diagonal for persistence diagram distance
 
-multiscale.transport.subtract.diagonal <- function(trp, p=2){
+
+# Add diagonal as a sink for distance on persistence diagram distance
+multiscale.transport.subtract.diagonal <- function(trp, p=2, scale=TRUE){
+  n <- length(trp$cost)
   
+  from  <- trp$from[[n]]
+  to    <- trp$to[[n]]
+  map   <- trp$map[[n]]
+
+  delta <- to[map[,2], ] - from[map[,1], ]
+  costs <- rowSums( abs(delta)^p )
+
+  dtmp <- rowSums(  from * 1/sqrt( ncol(from))  ) / sqrt( ncol(from) )
+  from.diag <- rowSums( abs( sweep(from, 1, dtmp, "-" )  ) )
+  from.diag = from.diag < 0.00001
+  
+  dtmp <- rowSums(  to * 1/sqrt( ncol(to))  )   / sqrt( ncol(to) )
+  to.diag <- rowSums( abs( sweep(to, 1, dtmp, "-" )  ) )
+  to.diag = to.diag < 0.00001
+
+  index = which( from.diag[map[,1]] & to.diag[map[,2]] )
+  map[index,3] = 0
+  if(scale){
+    map[map[,3]>0,3] = 1
+  }
+  else{
+    map[,3] = map[,3] /sum( map[,3] )
+  }
+ 
+  #index = which(map[,3] > 0 )
+  #plot( rbind(from, to), col=c(rep('red', nrow(from)), rep('black', nrow(to)) ), asp=1)
+  #segments( x0 = from[map[index,1],1], y0 = from[map[index,1],2],
+  #          x1 = to[map[index,2],1], y1 = to[map[index,2],2])
+
+
+  sum(costs*map[,3])^(1/p)
+}
+ 
+
+multiscale.transport.subtract.diagonal.wrong <- function(trp, p=2, scale=TRUE){
   n <- length(trp$cost)
   
   from  <- trp$from[[n]]
@@ -210,8 +247,8 @@ multiscale.transport.subtract.diagonal <- function(trp, p=2){
   from.mass <- trp$fromMass[[n]]
   to.mass <- trp$toMass[[n]]
 
-  from.mass <- from.mass[ map[,1] ] 
-  to.mass <- to.mass[ map[,2] ] 
+  from.mass <- pmin( map[,3], from.mass[ map[,1] ] )
+  to.mass <- pmin( map[,3], to.mass[ map[,2] ] )
 
   from.cost <- from.diag[ map[,1] ]
   to.cost <- to.diag[ map[,2] ]
@@ -221,11 +258,12 @@ multiscale.transport.subtract.diagonal <- function(trp, p=2){
   from.index <- which(delta.cost > 0 )
   from.mass[ from.index ] = pmax( from.mass[ from.index ] - to.mass[ from.index], 0 )
   
-  to.index <- which(delta.cost <= 0 )
-  to.mass[ to.index ] = pmax( to.mass[ to.index ] - from.mass[ to.index], 0 )
+  #to.index <- which(delta.cost <= 0 )
+  #to.mass[ to.index ] = pmax( to.mass[ to.index ] - from.mass[ to.index], 0 )
+  to.mass = pmax( to.mass - from.mass, 0 )
 
   from.index = which( costs > from.cost )
-  map[from.index,3 ] = map[from.index, 3] - from.mass[from.index]
+  map[from.index, 3] = map[from.index, 3] - from.mass[from.index]
   
   from.index = which( costs <= from.cost )
   from.mass[from.index] = 0
@@ -235,6 +273,16 @@ multiscale.transport.subtract.diagonal <- function(trp, p=2){
 
   to.index = which( costs <= to.cost )
   to.mass[to.index] = 0
-
-  sum(from.mass * from.cost + to.mass*to.cost + costs*map[,3])^(1/p)
+ 
+  if(scale){
+    from.mass[from.mass > 0] = 1
+    to.mass[to.mass > 0] = 1 
+    map[map[,3]>0,3] = 1
+    print( sum(map[,3]+to.mass+from.mass ) )
+    distance = sum(from.mass * from.cost + to.mass*to.cost + costs*map[,3])^(1/p)
+  }
+  else{
+    distance = sum(from.mass * from.cost + to.mass*to.cost + costs*map[,3])^(1/p)
+  }
+  distance
 }
