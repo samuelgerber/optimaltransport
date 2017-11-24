@@ -88,7 +88,8 @@ multiscale.transport.solve <- function(trp, gmra1, gmra2, scale1=-1, scale2=-1,
         as.integer(matchScale), as.integer(multiscaleCost),
         as.integer(multiscaleSolution), as.integer(dType), as.integer(nType)  )
 
-   multiscale.parse.result(res, multiscaleSolution)
+   res <- multiscale.parse.result(res, multiscaleSolution)
+   res$p <- p
 
 }
 
