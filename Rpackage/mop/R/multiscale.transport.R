@@ -90,6 +90,7 @@ multiscale.transport.solve <- function(trp, gmra1, gmra2, scale1=-1, scale2=-1,
 
    res <- multiscale.parse.result(res, multiscaleSolution)
    res$p <- p
+   res
 
 }
 

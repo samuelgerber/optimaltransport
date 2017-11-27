@@ -465,10 +465,10 @@ extern "C" {
         GMRATransportNode<double> *node =
           (GMRATransportNode<double> *)  *it;
         std::vector<int> &pts = node->getGMRANode()->getPoints();
-        sizeTo.push_back(pts.size());
+        sizeTo.push_back( pts.size() );
         radiusTo.push_back( node->getNodeRadius() );
         for (unsigned int j = 0 ; j < pts.size() ; j++) {
-          indexTo.push_back(pts[j]+1);
+          indexTo.push_back( pts[j]+1 );
         }
       }
 

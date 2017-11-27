@@ -88,7 +88,12 @@ class LemonSolver : public LPSolver{
          costScaling = coeff[i];
        }
      }
-     costScaling = ((double) maxVal ) / costScaling;
+     if( costScaling == 0){
+       costScaling = maxVal;
+     }
+     else{
+       costScaling = ((double) maxVal ) / costScaling;
+     }
 
      double capacityScaling = 0;
      for(int i=0; i<mass.size(); i++){
@@ -99,6 +104,8 @@ class LemonSolver : public LPSolver{
      }
      capacityScaling = ((double) maxVal ) / capacityScaling;
 
+     std::cout << "capacityScaling: "<< capacityScaling << std::endl;
+     std::cout << "costScaling: "<< costScaling << std::endl;
 
      //Setup nodes
      int massPositive = 0;
@@ -128,6 +135,8 @@ class LemonSolver : public LPSolver{
        supply[ terminal ] = -massPositive;
      }
      else{
+       std::cout << "Mass positive: " << massPositive << std::endl;
+       std::cout << "Mass negative: " << massNegative << std::endl;
        std::cout << "Mass imbalance: " << massImbalance << std::endl;
        supply[ terminal ] = -massImbalance;
      }
