@@ -1,10 +1,16 @@
-#Optimal Transport
+#Multiscale Optimal Transport
+
+An implementation of the fast multiscale approach to optimal transport described in:
+ Multiscale Strategies for Computing Optimal Transport
+ Samuel Gerber, Mauro Maggioni
+ Journal of Machine Learning Research; 18(72):1−32, 2017.
+ http://jmlr.org/papers/v18/16-108.html
 
 ![scale-4.png](https://bitbucket.org/repo/XyGX46/images/333242785-scale-4.png)
 ![scale-6.png](https://bitbucket.org/repo/XyGX46/images/661701334-scale-6.png)
 ![scale-11.png](https://bitbucket.org/repo/XyGX46/images/104944428-scale-11.png)
 
-This code is designed for fast multiscale optimal transport but also permits single scale optimal transport computations and more:
+The code is designed for fast multiscale optimal transport but also permits single scale optimal transport computations and more:
 
 * Optimal transport solved with Lemon, CPLEX, GPLK or MOSEK
 * Fast approximate transport using a mutliscale strategy 
