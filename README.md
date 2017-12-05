@@ -1,10 +1,10 @@
 #Multiscale Optimal Transport
 
-An implementation of the fast multiscale approach to optimal transport described in:
- Multiscale Strategies for Computing Optimal Transport
- Samuel Gerber, Mauro Maggioni
- Journal of Machine Learning Research; 18(72):1−32, 2017.
- http://jmlr.org/papers/v18/16-108.html
+An implementation of the fast multiscale approach to optimal transport described in:  
+ Multiscale Strategies for Computing Optimal Transport  
+ Samuel Gerber, Mauro Maggioni  
+ Journal of Machine Learning Research; 18(72):1−32, 2017.  
+ http://jmlr.org/papers/v18/16-108.html  
 
 ![scale-4.png](https://bitbucket.org/repo/XyGX46/images/333242785-scale-4.png)
 ![scale-6.png](https://bitbucket.org/repo/XyGX46/images/661701334-scale-6.png)
