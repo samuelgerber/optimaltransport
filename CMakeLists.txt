@@ -9,7 +9,7 @@ find_package(Eigen3 REQUIRED)
 
 option( USE_CPLEX "CPLEX library available" ) 
 
-if( USE_CEPLEX )
+if( USE_CPLEX )
   find_package(CPLEX REQUIRED)
 endif( USE_CPLEX )
 

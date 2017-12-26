@@ -76,12 +76,21 @@ class LemonSolver : public LPSolver{
 
      using namespace lemon;
 
-     DIGRAPH_TYPEDEFS(SmartDigraph);
      SmartDigraph graph;
+     typedef SmartDigraph::Node Node;
+     typedef SmartDigraph::NodeIt NodeIt;
+     typedef SmartDigraph::Arc Arc;
+     typedef SmartDigraph::ArcIt ArcIt;
+     typedef SmartDigraph::InArcIt InArcIt;
+     typedef SmartDigraph::OutArcIt OutArcIt;
+     typedef SmartDigraph::NodeMap<long long> IntNodeMap;
+     typedef SmartDigraph::ArcMap<long long> IntArcMap;
+
      int status;
 
      //Lemon allwos integer only
-     static const int maxVal = 10000;
+     static const long long maxVal = 1000000000L;
+
      double costScaling = 0;
      for(int i=0; i<coeff.size(); i++){
        if(coeff[i] > costScaling){
@@ -95,6 +104,7 @@ class LemonSolver : public LPSolver{
        costScaling = ((double) maxVal ) / costScaling;
      }
 
+
      double capacityScaling = 0;
      for(int i=0; i<mass.size(); i++){
         double tmp = fabs(mass[i]);
@@ -107,38 +117,47 @@ class LemonSolver : public LPSolver{
      std::cout << "capacityScaling: "<< capacityScaling << std::endl;
      std::cout << "costScaling: "<< costScaling << std::endl;
 
+
      //Setup nodes
-     int massPositive = 0;
-     int massNegative = 0;
+     long long massPositive = 0;
+     long long massNegative = 0;
      graph.reserveNode( mass.size() +1 );
      for(int i=0; i <= mass.size(); i++){
         graph.addNode();
      }
      IntNodeMap supply(graph);
      for(int i=0; i<mass.size(); i++){
-        int m = (int) ( mass[i] * capacityScaling );
+        long long m = (long long) ( mass[i] * capacityScaling );
+        //double m = mass[i];
         supply[ graph.nodeFromId(i) ] = m;
+
         if( m > 0 ){
           massPositive += m;
         }
         else{
           massNegative += m;
         }
+
      }
 
-     int massImbalance = massPositive + massNegative;
+     long long massImbalance = massPositive + massNegative;
      Node terminal = graph.nodeFromId( mass.size() );
+     //Node terminal;
      if( lambda > 0){
+       //terminal = graph.addNode();
        for(int i=ns; i<mass.size(); i++){
          supply[ graph.nodeFromId(i) ] = 0;
        }
        supply[ terminal ] = -massPositive;
+       //supply[ terminal ] = -1;
      }
      else{
+
        std::cout << "Mass positive: " << massPositive << std::endl;
        std::cout << "Mass negative: " << massNegative << std::endl;
        std::cout << "Mass imbalance: " << massImbalance << std::endl;
        supply[ terminal ] = -massImbalance;
+
      }
 
 
@@ -146,11 +165,14 @@ class LemonSolver : public LPSolver{
 
      //Setup arcs
      if( lambda > 0 || massImbalance < 0 ){
+     //if( lambda > 0 ){
        graph.reserveArc( sInd.size() + nt );
      }
      else{
        graph.reserveArc( sInd.size() + ns );
      }
+
+
      //Add regular node
      for( int i=0; i < sInd.size(); i++){
        graph.addArc( graph.nodeFromId(sInd[i]), graph.nodeFromId(tInd[i]) );
@@ -158,6 +180,7 @@ class LemonSolver : public LPSolver{
 
      //Add arcs to terminal node to deal with fuzzy match or imbalances
      if(lambda > 0 || massImbalance < 0){
+     //if( lambda > 0 ){
        for(int i=0; i < nt; i++){
          graph.addArc( graph.nodeFromId(i+ns), terminal );
        }
@@ -172,9 +195,12 @@ class LemonSolver : public LPSolver{
      IntArcMap capacity(graph), lower(graph), cost(graph);
      for( int i=0; i < coeff.size(); i++){
        Arc a = graph.arcFromId(i);
-       capacity[a] = (int) (capacityScaling * colUB[i] ) + 1;
-       lower[a] = (int) std::max(0, (int) (capacityScaling * colLB[i] ) -1 );
-       cost[a] = (int)( costScaling * coeff[i]);
+       capacity[a] = (long long) (capacityScaling * colUB[i] ) + 1;
+       //capacity[a] = colUB[i];
+       lower[a] = (long long) std::max(0LL, (long long) (capacityScaling * colLB[i] ) -1 );
+       //lower[a] = colLB[i];
+       cost[a] = (long long)( costScaling * coeff[i]);
+       //cost[a] = coeff[i];
      }
 
      if( lambda > 0 ){
@@ -182,8 +208,10 @@ class LemonSolver : public LPSolver{
          Arc a = graph.arcFromId(i);
          double m = fabs(mass[i-coeff.size()+ns]);
          double delta = m*lambda;
-         capacity[a] = (int) (capacityScaling * m+delta ) + 1;
-         lower[a] = (int) std::max(0, (int) (capacityScaling * m-delta ) - 1);
+         capacity[a] = (long long) (capacityScaling * (m+delta) ) + 1;
+         //capacity[a] = m+delta;
+         lower[a] = (long long) std::max(0LL, (long long) (capacityScaling * (m-delta) ) - 1);
+         //lower[a] = m-delta;
          cost[a] = 0;
        }
      }
@@ -207,16 +235,17 @@ class LemonSolver : public LPSolver{
      }
 
 
+
      //Solve
-     NetworkSimplex<SmartDigraph> ns(graph);
+     NetworkSimplex<SmartDigraph, long long> ns(graph);
      ns.upperMap(capacity);
      ns.lowerMap(lower);
      ns.costMap(cost);
      ns.supplyMap(supply);
 
 
-     NetworkSimplex<SmartDigraph>::ProblemType res = ns.run();
-     success = res == NetworkSimplex<SmartDigraph>::OPTIMAL;
+     NetworkSimplex<SmartDigraph, long long>::ProblemType res = ns.run();
+     success = res == NetworkSimplex<SmartDigraph, long long>::OPTIMAL;
      objValue  = ns.totalCost<double>();
      objValue /= capacityScaling;
      objValue /= costScaling;
@@ -229,6 +258,7 @@ class LemonSolver : public LPSolver{
      std::cout << "primal.size(): " << primal.size() << std::endl;
      for(int i=0; i< primal.size(); i++){
        primal[i] = ( (double) ns.flow( graph.arcFromId( i ) ) ) / capacityScaling;
+       //primal[i] = ns.flow( graph.arcFromId( i ) );
      }
      std::cout << "dual.size(): " << dual.size() << std::endl;
      for(int i=0; i<dual.size(); i++){
