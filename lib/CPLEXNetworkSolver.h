@@ -74,13 +74,13 @@ class CPLEXNetworkSolver : public LPSolver{
      ns=nSource;
      nt=nTarget;
 
-     if(lambda > 0){
+     //if(lambda > 0){
        rowStatus.resize( 1, CPX_BASIC );
        dual.resize( 1, 0);
 
-       primal.resize( nt, 0);
-       colStatus.resize( nt, CPX_AT_LOWER );
-     }
+       primal.resize( ns+nt, 0);
+       colStatus.resize( ns+nt, CPX_AT_LOWER );
+     //}
 
    };
 
@@ -107,7 +107,7 @@ class CPLEXNetworkSolver : public LPSolver{
        CPXNETaddarcs( env, prob, sInd.size(), sInd.data(), tInd.data(), colLB.data(), colUB.data(),
           coeff.data(), NULL );
 
-       //add arc from target nodes to terminal node with upper and lower bounds accoridng to lambda *
+       //add arc from target nodes to terminal node with upper and lower bounds according to lambda *
        //target mass.
        //Thus each target node is within delta = m*lambda of its mass
        std::vector<int> ttInd(nt, mass.size());
@@ -128,9 +128,74 @@ class CPLEXNetworkSolver : public LPSolver{
           NULL, NULL );
      }
      else{
-       CPXNETaddnodes( env, prob, mass.size(), mass.data(), NULL);
-       CPXNETaddarcs( env, prob, sInd.size(), sInd.data(), tInd.data(), colLB.data(), colUB.data(),
-          coeff.data(), NULL );
+       double massPositive = 0;
+       double massNegative = 0;
+       for(int i=0; i<mass.size(); i++){
+         if(mass[i] > 0 ){
+           massPositive += mass[i];
+         }
+         else{
+           massNegative += mass[i];
+         }
+       }
+       double massImbalance = massPositive + massNegative;
+
+       std::cout << "massImbalance: " << massImbalance << std::endl;
+       std::cout << "massPositive: " << massPositive << std::endl;
+       std::cout << "massNegative: " << massNegative << std::endl;
+
+       
+       std::vector<double> mtmp = mass;
+       if(massImbalance != 0 ){
+         //Add a terminal node with all the mass
+         mtmp.push_back( -massImbalance );
+       }
+
+       //Add nodes
+       CPXNETaddnodes( env, prob, mtmp.size(), mtmp.data(), NULL);
+
+       //CPXNETaddnodes( env, prob, mass.size(), mass.data(), NULL);
+       CPXNETaddarcs( env, prob, sInd.size(), sInd.data(), tInd.data(), 
+                      colLB.data(), colUB.data(), coeff.data(), NULL );
+
+       //Add arcs to terminal node to be able to account for mass imbalances
+       if(massImbalance < 0){
+         std::vector<int> ttInd( nt, mass.size() );
+         std::vector<int> tsInd( nt );
+         std::vector<double> lb( nt );
+         std::vector<double> ub( nt );
+
+         for(int i=0; i<nt; i++){
+           double m = fabs(mass[ns+i]);
+           lb[i] =  0;
+           ub[i] =  m;
+           tsInd[i] = ns + i;
+         }
+
+
+         CPXNETaddarcs( env, prob, tsInd.size(), tsInd.data(), ttInd.data(), lb.data(), ub.data(),
+                        NULL, NULL );
+       }
+       else{
+         std::vector<int> ttInd( ns, mass.size() );
+         std::vector<int> tsInd( ns );
+         std::vector<double> lb( ns );
+         std::vector<double> ub( ns );
+
+         for(int i=0; i<ns; i++){
+           double m = fabs(mass[i]);
+           lb[i] =  0;
+           ub[i] =  m;
+           tsInd[i] = i;
+         }
+
+
+         CPXNETaddarcs( env, prob, tsInd.size(), tsInd.data(), ttInd.data(), lb.data(), ub.data(),
+                        NULL, NULL );
+
+       }
+
+
      }
 
      CPXNETchgobjsen( env, prob, CPX_MIN );

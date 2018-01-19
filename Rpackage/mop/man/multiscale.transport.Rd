@@ -24,7 +24,7 @@ Compute optimal transport using a multiscale linear programming approach.
 
 multiscale.transport.solve(gmra1,  gmra2, scale1=-1, scale2=-1 , p=1, 
     w1=1, w2=1, matchScale=TRUE, multiscaleCost=FALSE, multiscaleSolution=FALSE,
-    dType=1, nType=1)
+    dType=1, nType=1, scaleMass = TRUE)
 
 
 
@@ -95,27 +95,32 @@ multiscale.transport.create.sinkhorn.propagation.strategy(lambda, tolerance,
     Default is lemon
   }
   \item{propFactor}{Neighborhood size (ball = propFactor * node radius) to
-    consider when propating solution from one scale to the next. 0 selects
-      children of current solution only, i.e. arcs with non-zero flow.}
-  \item{nRefinmentIterations}{Number of refinment strategy iterations. If set to
-  =1 iteratied unitl convergence.}
+                    consider when propating solution from one scale to the next. 
+                    0 selects children of current solution only, i.e. arcs with 
+                    non-zero flow.}
+  \item{nRefinmentIterations}{Number of refinment strategy iterations. 
+                              If set to -1 the refinment is iterated unitl convergence.}
   \item{gmra1}{GMRA handle for source distribution (see package gmra)}
   \item{gmra2}{GMRA handle for target distribution (see package gmra)}
   \item{wStein}{Setup gmra such that wassserstein node distance can be used,
-    i.e. compute covariance structure in each node}
+                i.e. compute covariance structure in each node}
   \item{nTrials}{Number of randomized runs}
   \item{nExclusions}{Number of exclusion runs}
   \item{factor}{Number of additional paths for refinement in the duality
-    strategy to add as a multiplicatve factor of the number of points at each
-    scale}  
+                strategy to add as a multiplicatve factor of the number of 
+                points at each scale}  
   \item{dType}{Cost function type. 1 = Euclidean metric, 2 = L1 metric, 3 =
-    Squared Euclidean Metric, 4 = Gaussian 2-Wasserstein per Node}
+               Squared Euclidean Metric, 4 = Gaussian 2-Wasserstein per Node}
   \item{lambda}{If lambda is > 0 do a fuzzy match allwoing a mismatch at each
-    each target of +/- lambda * mass of node. Only works with CPLEX lp
-      solvers.}
-  \item{k}{Constrain capacity of paths to 1/k times the minimum of the mass of source or target}
+                each target of +/- lambda * mass of node. Only works with CPLEX 
+                lp-solvers.}
+  \item{k}{Constrain capacity of paths to 1/k times the minimum of the mass of 
+           source or target}
   \item{nIter}{Number of capcity constrain iterations}
-}
+  \item{scaleMass}{Scale mass of source and taget to sum to one. Otherwise the
+                   method solves for an imbalanced mass transport for which some 
+                   mass  can remain stationary (the amount that differs between 
+                   source and target masses). } }
 
 \value{
 A multiscale transport plan for multiscale.transport and
@@ -133,8 +138,6 @@ from -  source points\cr
 to - target points  \cr
 fromMass - mass for each source point  \cr 
 toMass - mass of each target point\cr
-
-
 }
 
 \author{

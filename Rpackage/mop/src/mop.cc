@@ -219,7 +219,7 @@ extern "C" {
       GMRANeighborhood<double> *nh2, int d1, int d2, double p, int nScales1, int
       nScales2, std::vector<double> &w1, std::vector<double> &w2,
       MultiscaleTransport<double> &transport, bool matchScale,
-      bool multiscaleCost, bool multiscaleSolution){
+      bool multiscaleCost, bool multiscaleSolution, bool scaleMass){
 
     using namespace Eigen;
 
@@ -237,7 +237,7 @@ extern "C" {
 
 
     std::vector< TransportPlan<double> * > sols = transport.solve( t1Levels,
-        t2Levels, p, nScales1, nScales2, matchScale);
+        t2Levels, p, nScales1, nScales2, matchScale, scaleMass);
 
 
     VectorXd cost(sols.size());
@@ -910,7 +910,7 @@ extern "C" {
   //solve the multiscale transport problem
   SEXP multiscaleTransportSolve(SEXP Rtrp, SEXP Rgmra1, SEXP Rgmra2, SEXP Rs1, SEXP Rs2,
       SEXP Rw1, SEXP Rnw1, SEXP Rw2, SEXP Rnw2, SEXP Rp, SEXP RmatchScale, SEXP
-      RmultiscaleCost, SEXP RmultiscaleSolution, SEXP RdType, SEXP RnType){
+      RmultiscaleCost, SEXP RmultiscaleSolution, SEXP RdType, SEXP RnType, SEXP RscaleMass){
 
 
 
@@ -936,6 +936,7 @@ extern "C" {
     bool matchScale = *INTEGER(RmatchScale);
     bool multiscaleCost = *INTEGER(RmultiscaleCost);
     bool multiscaleSolution = *INTEGER(RmultiscaleSolution);
+    bool scaleMass = *INTEGER(RscaleMass);
 
     std::vector<double> weights1;
     if(nw1 == n1){
@@ -960,7 +961,8 @@ extern "C" {
 
 
     SEXP res = multiscaleTransport(nh1, nh2, m1, m2, p, s1, s2, weights1,
-        weights2, *transport, matchScale, multiscaleCost, multiscaleSolution);
+        weights2, *transport, matchScale, multiscaleCost, multiscaleSolution, 
+        scaleMass);
 
     delete nh1;
     delete nh2;

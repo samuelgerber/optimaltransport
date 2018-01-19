@@ -80,13 +80,14 @@ multiscale.parse.result <- function(res, multiscaleSolution){
 
 multiscale.transport.solve <- function(trp, gmra1, gmra2, scale1=-1, scale2=-1,
     stpPct = 0, p=1, w1=1, w2=1, matchScale=FALSE, multiscaleCost=FALSE,
-    multiscaleSolution=FALSE, dType=1, nType=1){
+    multiscaleSolution=FALSE, dType=1, nType=1, scaleMass=TRUE){
 
     res <- .Call("multiscaleTransportSolve", trp, gmra1, gmra2, as.integer(scale1),
         as.integer(scale2), as.double(w1), as.integer(length(w1)),
         as.double(w2), as.integer(length(w2)), as.double(p),
         as.integer(matchScale), as.integer(multiscaleCost),
-        as.integer(multiscaleSolution), as.integer(dType), as.integer(nType)  )
+        as.integer(multiscaleSolution), as.integer(dType), as.integer(nType), 
+        as.integer(scaleMass)  )
 
    res <- multiscale.parse.result(res, multiscaleSolution)
    res$p <- p

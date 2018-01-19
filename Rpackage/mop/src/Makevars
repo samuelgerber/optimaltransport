@@ -9,7 +9,7 @@ PKG_CPPFLAGS=-I.
 
 
 #Setup for cplex
-#PKG_LIBS= -lilocplex -lcplex -lconcert  
+PKG_LIBS= -lilocplex -lcplex -lconcert  
 
 #Setup for MOSEK
 #PKG_LIBS=${LAPACK_LIBS} $(BLAS_LIBS) $(FLIBS) -lmosek #-L/path to optmization library if not instandard directory 

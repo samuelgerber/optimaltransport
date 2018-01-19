@@ -777,6 +777,7 @@ class MultiscaleTransport{
         normalize(aLevels);
         normalize(bLevels);
       }
+
       typename std::vector< MultiscaleTransportLevel<TPrecision> * >::iterator itA =
         aLevels.begin();
       rootSource = *itA;
@@ -790,13 +791,13 @@ class MultiscaleTransport{
 
       int scaleStart1 = aLevels.size()-1-nScales1;
       int scaleStart2 = bLevels.size()-1-nScales2;
-      std::advance(itA, scaleStart1);
-      std::advance(itB, scaleStart2);
+      std::advance( itA, scaleStart1 );
+      std::advance( itB, scaleStart2 );
 
       if(matchStartLevel){
 
-        TPrecision rA = getMeanRadius(*itA, p);
-        TPrecision rB = getMeanRadius(*itB, p);
+        TPrecision rA = getMeanRadius( *itA, p );
+        TPrecision rB = getMeanRadius( *itB, p );
         TPrecision delta = rA-rB;
         if(delta > 0){
           ++itA;
@@ -936,7 +937,9 @@ class MultiscaleTransport{
     MultiscaleTransportLevel<TPrecision> *rootSource;
     MultiscaleTransportLevel<TPrecision> *rootTarget;
 
+
     void normalize(std::vector< MultiscaleTransportLevel<TPrecision> * > &levels){
+
       //Normalize masses to one at each level and match up parent child mass
       //relations
       for(typename std::vector< MultiscaleTransportLevel<TPrecision> *
@@ -962,6 +965,8 @@ class MultiscaleTransport{
           (*nIt)->setMass((*nIt)->getMass()/total);
         }
       }
+
+
     };
 
 
