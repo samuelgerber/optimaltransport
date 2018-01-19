@@ -3,6 +3,6 @@
 //which is included in the package. If you want to include another library
 //uncomment and adjust the linker arguments in Makevars.
 
-#define MOP_USE_CPLEX
+//#define MOP_USE_CPLEX
 //#define MOP_USE_MOSEK
 //#define MOP_USE_GLPK
