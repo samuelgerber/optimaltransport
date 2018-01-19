@@ -13,13 +13,13 @@
 
 template <typename TPrecision>
 class TransportNode{
-  
+
   public:
     typedef typename std::vector< TransportNode<TPrecision>*  >  TransportNodeVector;
     typedef typename TransportNodeVector::iterator TransportNodeVectorIterator;
-  
+
   private:
-  
+
     TPrecision piMax;
     TPrecision piMin;
     TPrecision potential;
@@ -27,7 +27,7 @@ class TransportNode{
     TPrecision mass;
 
     TransportNodeVector kids;
-    TransportNode<TPrecision> *parent; 
+    TransportNode<TPrecision> *parent;
 
     TPrecision radius;
 
@@ -101,7 +101,7 @@ class TransportNode{
       return radius;
     };
 
-    
+
     TPrecision getAverageTransportCost(const TransportNode<TPrecision> *other, double p){
       TPrecision sum = 0;
       for(int i=0; i<kids.size(); i++){
@@ -111,18 +111,18 @@ class TransportNode{
       }
 
       return sum / ( kids.size() * other->kids.size() );
-    
+
     };
 
     virtual TPrecision getTransportCost(const TransportNode<TPrecision> *other, double p) const= 0;
     //virtual TPrecision getDeltaTransportCost(TransportNode<TPrecision> *other, double p) const= 0;
-    
+
     /*
     virtual bool operator == (const TransportNode<TPrecision> &other) const = 0;
     virtual bool operator <  (const TransportNode<TPrecision> &other) const = 0;
     virtual bool operator >  (const TransportNode<TPrecision> &other) const = 0;
     */
-    //virtual size_t hashKey() const = 0; 
+    //virtual size_t hashKey() const = 0;
 
 
 
@@ -214,23 +214,23 @@ class TransportNodeHash{
 
 template <typename TPrecision>
 class MultiscaleTransportLevel{
- 
+
   public:
-  
+
     typedef typename TransportNode<TPrecision>::TransportNodeVector TransportNodeVector;
     typedef typename TransportNodeVector::iterator TransportNodeVectorIterator;
     typedef typename TransportNodeVector::const_iterator TransportNodeVectorCIterator;
-  
+
 
   private:
-  
+
     int scale;
     TransportNodeVector nodes;
- 
+
     MultiscaleTransportLevel<TPrecision> *parent;
 
   public:
-  
+
     MultiscaleTransportLevel(int s, MultiscaleTransportLevel<TPrecision> *parentLevel) : scale(s), parent(parentLevel){
     };
 
@@ -275,7 +275,7 @@ class MultiscaleTransportLevel{
       return scale;
     };
 
-   
+
 
     MultiscaleTransportLevel<TPrecision> *getRootLevel(){
       MultiscaleTransportLevel<TPrecision> *current = this;
@@ -311,7 +311,7 @@ class MultiscaleTransportLevel{
 
 template <typename TPrecision>
 class TransportPlan{
- 
+
 
 
   public:
@@ -330,7 +330,7 @@ class TransportPlan{
       };
 
 
-      Path(TransportNode<TPrecision> *f, TransportNode<TPrecision> *t) 
+      Path(TransportNode<TPrecision> *f, TransportNode<TPrecision> *t)
         :from(f),to(t){
           index= -1;
           cost = -1;
@@ -387,7 +387,7 @@ class TransportPlan{
 
     std::vector<int> toPathCounts;
     int pathCounter;
-  
+
 
 
   public:
@@ -395,7 +395,7 @@ class TransportPlan{
 
     TransportPlan(MultiscaleTransportLevel<TPrecision> *s,
         MultiscaleTransportLevel<TPrecision> *t) : source(s), target(t){
-      
+
       paths.resize( source->getNodes().size() );
       toPathCounts.resize( target->getNodes().size(), 0 );
       timeSolve = 0;
@@ -405,12 +405,12 @@ class TransportPlan{
       optimizationStatus = -1;
       //nTotalPaths = -1;
       pathCounter = 0;
-    
-    };    
-   
-/* 
+
+    };
+
+/*
     TransportPlan(int nFrom, int nTo) : source(NULL), target(NULL){
-      
+
       paths.resize( nFrom );
       toPathCounts.resize( nTo, 0);
       timeLP = 0;
@@ -440,7 +440,7 @@ class TransportPlan{
     clock_t timeRefine;
 
 
-    //For sinkhorn transport 
+    //For sinkhorn transport
     Eigen::MatrixXd leftScaling;
 
 
@@ -462,7 +462,7 @@ class TransportPlan{
     Path &getPath(int from, int to){
       return paths[from][to];
     };
-    
+
 
     int getNumberOfToPaths(int from){
       return paths[from].size();
@@ -490,7 +490,7 @@ class TransportPlan{
     int getPathIndex(const Path &p){
       int from = p.from->getID();
       int to = p.to->getID();
-      
+
       typename std::map<int, Path>::const_iterator it = paths[from].find(to);
 
       if(it == paths[from].end()){
@@ -501,12 +501,12 @@ class TransportPlan{
 
 
     void pathIteratorBegin(){
-      
+
       pathIteratorOuter = paths.begin();
       if(pathIteratorOuter != paths.end() ){
 
         pathIteratorInner = (*pathIteratorOuter).begin();
-        
+
         while( pathIteratorInner == (*pathIteratorOuter).end() ){
           ++pathIteratorOuter;
           if( pathIteratorOuter != paths.end()){
@@ -518,7 +518,7 @@ class TransportPlan{
         }
       }
 
-    }; 
+    };
 
 
     bool pathIteratorIsAtEnd(){
@@ -549,7 +549,7 @@ class TransportPlan{
         else{
           break;
         }
-      }      
+      }
     };
 
 
@@ -568,14 +568,14 @@ class TransportPlan{
       for( this->pathIteratorBegin(); !this->pathIteratorIsAtEnd();
            this->pathIteratorNext() ){
         Path &path = this->pathIteratorCurrent();
-       
+
         if(path.w > 0 ){
           typename std::vector< TransportNode<TPrecision>* > fNodes;
           TransportNode<TPrecision> *from = path.from;
           while(from != NULL){
             fNodes.push_back(from);
             from = from->getParent();
-          }  
+          }
           typename std::vector< TransportNode<TPrecision>* > tNodes;
           TransportNode<TPrecision> *to = path.to;
           while(to != NULL){
@@ -583,7 +583,7 @@ class TransportPlan{
             to = to->getParent();
           }
 
-         
+
           typename std::vector< TransportNode<TPrecision>* >::reverse_iterator fIt = fNodes.rbegin();
           typename std::vector< TransportNode<TPrecision>* >::reverse_iterator tIt = tNodes.rbegin();
           from = *fIt;
@@ -600,23 +600,23 @@ class TransportPlan{
             if(tIt != tNodes.rend() ){
               to = *tIt;
             }
-               
+
             if(fIt != fNodes.rend()){
               ++fIt;
             }
             if(fIt != fNodes.rend() ){
               from = *fIt;
             }
-       
+
           }
-          
+
         }
 
       }
 
       return costs;
     };
-    
+
 
     TransportPlan<TPrecision> *createCopy(){
       TransportPlan<TPrecision> *res = new
@@ -662,27 +662,27 @@ class TransportPlan{
 
 template <typename TPrecision>
 class TransportPlanSolutions{
-  
-  private:  
-  
+
+  private:
+
     typedef typename  std::list< TransportPlan<TPrecision> *>::iterator TPIterator;
-    typedef typename TransportPlan<TPrecision>::Path Path; 
-    
-    
+    typedef typename TransportPlan<TPrecision>::Path Path;
+
+
     std::list< TransportPlan<TPrecision> *> alternatives;
     TransportPlan<TPrecision> *sol;
- 
 
 
-  public:    
-    
-    
+
+  public:
+
+
 
 
     TransportPlanSolutions(MultiscaleTransportLevel<TPrecision> *s,
         MultiscaleTransportLevel<TPrecision> *t) {
       sol = new TransportPlan<TPrecision>(s, t);
-    }; 
+    };
 
 
     virtual ~TransportPlanSolutions(){
@@ -692,13 +692,13 @@ class TransportPlanSolutions{
       }
       alternatives.clear();
 
-    }; 
+    };
 
 
     void setPrimarySolution(TransportPlan<TPrecision> *primary){
       sol = primary;
     };
-    
+
     TransportPlan<TPrecision> *getPrimarySolution(){
       return sol;
     };
@@ -717,7 +717,7 @@ class TransportPlanSolutions{
 
     TransportPlan<TPrecision> *getCombinedPaths(){
 
-      TransportPlan<TPrecision> *res = sol->createCopy(); 
+      TransportPlan<TPrecision> *res = sol->createCopy();
 
       for(TPIterator it = alternatives.begin(); it !=alternatives.end(); ++it){
         TransportPlan<TPrecision> *a= *it;
@@ -744,13 +744,13 @@ class MultiscaleTransport{
 
   public:
 
-    
+
     typedef typename TransportNode<TPrecision>::TransportNodeVector TransportNodeVector;
     typedef typename TransportNodeVector::iterator TransportNodeVectorIterator;
     typedef typename TransportNodeVector::const_iterator TransportNodeVectorCIterator;
 
 
-    typedef typename TransportPlan<TPrecision>::Path Path; 
+    typedef typename TransportPlan<TPrecision>::Path Path;
 
 
     virtual ~MultiscaleTransport(){};
@@ -758,24 +758,25 @@ class MultiscaleTransport{
 
     std::vector< TransportPlan<TPrecision> * > solve(std::vector<
         MultiscaleTransportLevel<TPrecision>* > &aLevels,
-        std::vector<MultiscaleTransportLevel<TPrecision>* > &bLevels, 
+        std::vector<MultiscaleTransportLevel<TPrecision>* > &bLevels,
         double p = 1, int nScales1 = -1, int nScales2 = -1, bool matchStartLevel =
-        false){
+        false, bool scaleMass = true){
 
       //compute distances at each tree level
-      typename std::vector< TransportPlan<TPrecision> *> solutions; 
+      typename std::vector< TransportPlan<TPrecision> *> solutions;
 
       if(nScales1 < 0 || nScales1 >= (int) aLevels.size()){
         nScales1 = aLevels.size()-1;
       }
-      
+
       if(nScales2 < 0 || nScales2 >= (int) bLevels.size()){
         nScales2 = bLevels.size()-1;
       }
 
-      normalize(aLevels);
-      normalize(bLevels);
-
+      if(scaleMass){
+        normalize(aLevels);
+        normalize(bLevels);
+      }
       typename std::vector< MultiscaleTransportLevel<TPrecision> * >::iterator itA =
         aLevels.begin();
       rootSource = *itA;
@@ -830,20 +831,20 @@ class MultiscaleTransport{
               delta = tmp;
             }
             ++itB;
-          } 
+          }
 
           if(itB == bLevels.end() ){
             --itB;
           }
         }
 
-        
+
       }
 
 
       MultiscaleTransportLevel<TPrecision> *A = *itA;
       MultiscaleTransportLevel<TPrecision> *B = *itB;
-      
+
       TransportPlanSolutions<TPrecision> *prevSol = NULL;
       int currentScale = 0;
       while( itA != aLevels.end() || itB != bLevels.end() ){
@@ -883,11 +884,11 @@ class MultiscaleTransport{
           delete prevSol;
         }
         prevSol = sol;
-       
+
 
         if(itA != aLevels.end()){
          ++itA;
-        } 
+        }
         if( itA != aLevels.end()){
           A = *itA;
         }
@@ -974,7 +975,7 @@ class MultiscaleTransport{
         return radius / n.size();
     };
 
-   
+
 };
 
 
