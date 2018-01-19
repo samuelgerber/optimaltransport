@@ -407,7 +407,7 @@ class GMRAMultiscaleTransportLevel : public MultiscaleTransportLevel<TPrecision>
 
           TPrecision mass = 0;
           if(weights.empty()){
-            mass = node->getPoints().size() / nPoints;
+            mass = node->getPoints().size(); // / nPoints;
           }
           else{
             std::vector<int> pts = node->getPoints();

@@ -756,11 +756,11 @@ class MultiscaleTransport{
     virtual ~MultiscaleTransport(){};
 
 
-    std::vector< TransportPlan<TPrecision> * > solve(std::vector<
-        MultiscaleTransportLevel<TPrecision>* > &aLevels,
+    std::vector< TransportPlan<TPrecision> * > solve(
+        std::vector<MultiscaleTransportLevel<TPrecision>* > &aLevels,
         std::vector<MultiscaleTransportLevel<TPrecision>* > &bLevels, 
-        double p = 1, int nScales1 = -1, int nScales2 = -1, bool matchStartLevel =
-        false){
+        double p = 1, int nScales1 = -1, int nScales2 = -1, 
+        bool matchStartLevel =false, bool scaleMass = true ){
 
       //compute distances at each tree level
       typename std::vector< TransportPlan<TPrecision> *> solutions; 
@@ -773,8 +773,10 @@ class MultiscaleTransport{
         nScales2 = bLevels.size()-1;
       }
 
+      if( scaleMass ){
       normalize(aLevels);
-      normalize(bLevels);
+        normalize(bLevels);
+      }
 
       typename std::vector< MultiscaleTransportLevel<TPrecision> * >::iterator itA =
         aLevels.begin();
@@ -789,13 +791,13 @@ class MultiscaleTransport{
 
       int scaleStart1 = aLevels.size()-1-nScales1;
       int scaleStart2 = bLevels.size()-1-nScales2;
-      std::advance(itA, scaleStart1);
-      std::advance(itB, scaleStart2);
+      std::advance( itA, scaleStart1 );
+      std::advance( itB, scaleStart2 );
 
       if(matchStartLevel){
 
-        TPrecision rA = getMeanRadius(*itA, p);
-        TPrecision rB = getMeanRadius(*itB, p);
+        TPrecision rA = getMeanRadius( *itA, p );
+        TPrecision rB = getMeanRadius( *itB, p );
         TPrecision delta = rA-rB;
         if(delta > 0){
           ++itA;
@@ -935,7 +937,9 @@ class MultiscaleTransport{
     MultiscaleTransportLevel<TPrecision> *rootSource;
     MultiscaleTransportLevel<TPrecision> *rootTarget;
 
+
     void normalize(std::vector< MultiscaleTransportLevel<TPrecision> * > &levels){
+      
       //Normalize masses to one at each level and match up parent child mass
       //relations
       for(typename std::vector< MultiscaleTransportLevel<TPrecision> *
@@ -961,6 +965,8 @@ class MultiscaleTransport{
           (*nIt)->setMass((*nIt)->getMass()/total);
         }
       }
+
+
     };
 
 

@@ -89,7 +89,7 @@ class LemonSolver : public LPSolver{
      int status;
 
      //Lemon allwos integer only
-     static const long long maxVal = 1000000000L;
+     static const long long maxVal = 10000000000L;
 
      double costScaling = 0;
      for(int i=0; i<coeff.size(); i++){
