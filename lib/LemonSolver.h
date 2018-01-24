@@ -105,14 +105,14 @@ class LemonSolver : public LPSolver{
      }
 
 
-     double capacityScaling = 0;
+     double maxCapacity = 0;
      for(int i=0; i<mass.size(); i++){
         double tmp = fabs(mass[i]);
-        if( tmp > capacityScaling){
-          capacityScaling = tmp;
+        if( tmp > maxCapacity){
+          maxCapacity = tmp;
         }
      }
-     capacityScaling = ((double) maxVal ) / capacityScaling;
+     double capacityScaling = ((double) maxVal ) / maxCapacity;
 
      std::cout << "capacityScaling: "<< capacityScaling << std::endl;
      std::cout << "costScaling: "<< costScaling << std::endl;
@@ -195,7 +195,12 @@ class LemonSolver : public LPSolver{
      IntArcMap capacity(graph), lower(graph), cost(graph);
      for( int i=0; i < coeff.size(); i++){
        Arc a = graph.arcFromId(i);
-       capacity[a] = (long long) (capacityScaling * colUB[i] ) + 1;
+       if( colUB[i] > maxCapacity ){
+         capacity[a] = (long long) (capacityScaling * maxCapacity ) + 1;
+       }
+       else{
+         capacity[a] = (long long) (capacityScaling * colUB[i] ) + 1;
+       }
        //capacity[a] = colUB[i];
        lower[a] = (long long) std::max(0LL, (long long) (capacityScaling * colLB[i] ) -1 );
        //lower[a] = colLB[i];
@@ -219,7 +224,7 @@ class LemonSolver : public LPSolver{
        if( massImbalance < 0 ){
          for(int i=coeff.size(); i<coeff.size()+nt; i++){
            Arc a = graph.arcFromId(i);
-           capacity[a] = capacityScaling;
+           capacity[a] = capacityScaling * maxCapacity ;
            lower[a] = 0;
            cost[a] = 0;
          }
@@ -227,7 +232,7 @@ class LemonSolver : public LPSolver{
        else{
          for(int i=coeff.size(); i<coeff.size()+ns; i++){
            Arc a = graph.arcFromId(i);
-           capacity[a] = capacityScaling;
+           capacity[a] = capacityScaling * maxCapacity ;
            lower[a] = 0;
            cost[a] = 0;
          }
@@ -331,7 +336,7 @@ class LemonSolver : public LPSolver{
    };
 
    virtual void setColBounds(int i){
-     setColBounds(i, 0, 1);
+     setColBounds(i, 0, std::numeric_limits<double>::max() );
    };
 
    virtual void setColBounds(int col, double lb, double ub){

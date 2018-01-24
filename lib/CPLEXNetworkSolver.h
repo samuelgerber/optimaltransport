@@ -11,6 +11,7 @@
 
 #include <vector>
 #include <math.h>
+#include <limits>
 
 class CPLEXNetworkSolver : public LPSolver{
 
@@ -144,7 +145,7 @@ class CPLEXNetworkSolver : public LPSolver{
        std::cout << "massPositive: " << massPositive << std::endl;
        std::cout << "massNegative: " << massNegative << std::endl;
 
-       
+
        std::vector<double> mtmp = mass;
        if(massImbalance != 0 ){
          //Add a terminal node with all the mass
@@ -155,7 +156,7 @@ class CPLEXNetworkSolver : public LPSolver{
        CPXNETaddnodes( env, prob, mtmp.size(), mtmp.data(), NULL);
 
        //CPXNETaddnodes( env, prob, mass.size(), mass.data(), NULL);
-       CPXNETaddarcs( env, prob, sInd.size(), sInd.data(), tInd.data(), 
+       CPXNETaddarcs( env, prob, sInd.size(), sInd.data(), tInd.data(),
                       colLB.data(), colUB.data(), coeff.data(), NULL );
 
        //Add arcs to terminal node to be able to account for mass imbalances
