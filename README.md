@@ -1,4 +1,11 @@
+This is an old repository. Please use the repository at
+
+https://bitbucket.org/suppechasper/optimaltransport
+
+
 #Multiscale Optimal Transport
+
+
 
 An implementation of the fast multiscale approach to optimal transport described in:  
  Multiscale Strategies for Computing Optimal Transport  
